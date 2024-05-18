@@ -1,0 +1,5 @@
+1. Make sure Python is installed and set as the interpreter
+2. Install PyMuPDF module
+3. the command to run is --pdf-file <file name>.pdf --out_file <output file name>.csv 
+
+note: the pdf file needs to be in same directory, and the csv file will be created also in same directory
