@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Metadata-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Windows Hardening System Dashboard</title>
+
+    <!--Importing Files-->
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+    <!--Navbar-->
+    <div class="container">
+        <header>
+            <button>Run Scan</button>
+            <button>Current Tasks</button>
+            <button>Settings</button>
+        </header>
+
+        <!--Current Warnings Section-->
+        <div class="content-section">
+            <!--Intend to implment AJAX to feed in live values in the future-->
+            <div class="current-warnings">
+                <h2>Current Warnings</h2>
+                <table>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Password Policy not satisfied</td>
+                        <td><button>Enforce</button></td>
+                        <td><button>Fix Manually</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Account Lockout Policy not satisfied</td>
+                        <td><button>Enforce</button></td>
+                        <td><button>Fix Manually</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        
+        <div class="content-section">
+            <!--CIS Benchmark Section-->
+            <div class="cis-benchmark">
+                <button>11 Enterprise</button>
+                <button>10 Enterprise</button>
+                <br><br>
+                <button>Add CIS Benchmark File</button>
+            </div>
+
+            <!--Scan Info Section-->
+            <div class="auto-scan-progress">
+                <h2>Auto-Scan Progress</h2>
+                <p>Scanning Schedule: Daily, 3am</p>
+                <p>Last Completed Scan: 23 April 2024, 3:30am</p>
+            </div>
+        </div>
+
+        <!--Monitored Machines Section-->
+        <div class="system-monitoring">
+            <!--Intend to implment AJAX to feed in live values in the future-->
+            <h2>All Currently Monitored Systems</h2>
+            <div class="all-systems">
+                <table>
+                    <tr>
+                        <td><span style="color: red;">&#x25A0;</span> IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 24 April 2024, 3:00am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: red;">&#x25A0;</span> IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 24 April 2024, 3:05am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 24 April 2024, 3:10am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Checking</td>
+                        <td>Last Checked: 23 April 2024, 3:15am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 23 April 2024, 3:20am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 23 April 2024, 3:25am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>Status: Checked</td>
+                        <td>Last Checked: 23 April 2024, 3:30am</td>
+                        <td><button>View More</button></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="add-client">
+                <button>Add Client</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

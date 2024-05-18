@@ -1,0 +1,82 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 90%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+header, .content-section, .system-monitoring {
+    margin-bottom: 20px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #848785;
+    padding: 10px;
+    border-radius: 5px;
+}
+header button {
+    padding: 5px 100px;
+    border: none;
+    background-color: #424242;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+header button:hover {
+    background-color: #0056b3;
+}
+.current-warnings, .auto-scan-progress, .all-systems {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.current-warnings table, .all-systems table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.current-warnings table td, .all-systems table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+.current-warnings table td:nth-child(3), .current-warnings table td:nth-child(4), 
+.all-systems table td:last-child {
+    text-align: center;
+}
+.auto-scan-progress, .cis-benchmark {
+    display: inline-block;
+    width: 48%;
+    vertical-align: top;
+}
+.cis-benchmark {
+    text-align: center;
+    padding-top: 40px;
+}
+.cis-benchmark button, .add-client button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.cis-benchmark button:hover, .add-client button:hover {
+    background-color: #218838;
+}
+.auto-scan-progress {
+    text-align: center;
+    padding: 20px;
+}
+.add-client {
+    text-align: center;
+    margin-top: 20px;
+}
