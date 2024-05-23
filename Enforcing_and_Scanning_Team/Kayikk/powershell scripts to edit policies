@@ -1,0 +1,45 @@
+# Set minimum password length
+$minPasswordLength = 14
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('MinimumPasswordLength = 0', "MinimumPasswordLength = $minPasswordLength") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Set maximum password age
+$maxPasswordAge = 60
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('MaximumPasswordAge = 42', "MaximumPasswordAge = $maxPasswordAge") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Set password history size
+$passwordHistorySize = 24
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('PasswordHistorySize = 0', "PasswordHistorySize = $passwordHistorySize") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Cleanup
+Remove-Item C:\secpol.cfg
+
+
+
+# Revert minimum password length to default (0, meaning no minimum length requirement)
+$defaultMinPasswordLength = 0
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('MinimumPasswordLength = 14', "MinimumPasswordLength = $defaultMinPasswordLength") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Revert maximum password age to default (42 days)
+$defaultMaxPasswordAge = 42
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('MaximumPasswordAge = 60', "MaximumPasswordAge = $defaultMaxPasswordAge") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Revert password history size to default (0, meaning no history is maintained)
+$defaultPasswordHistorySize = 0
+secedit /export /cfg C:\secpol.cfg
+(Get-Content C:\secpol.cfg).replace('PasswordHistorySize = 24', "PasswordHistorySize = $defaultPasswordHistorySize") | Set-Content C:\secpol.cfg
+secedit /configure /db secedit.sdb /cfg C:\secpol.cfg
+
+# Cleanup
+Remove-Item C:\secpol.cfg
+
+
