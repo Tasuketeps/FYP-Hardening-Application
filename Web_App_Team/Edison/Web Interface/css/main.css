@@ -57,11 +57,17 @@ header button:hover {
     width: 48%;
     vertical-align: top;
 }
-.cis-benchmark {
+
+.benchmark-container {
+    border: 1px solid #ddd;
     text-align: center;
-    padding-top: 40px;
+    padding: 40px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
 }
-.cis-benchmark button, .add-client button {
+
+.benchmark-container button, .add-client button {
     padding: 10px 20px;
     border: none;
     background-color: #28a745;
@@ -69,9 +75,14 @@ header button:hover {
     border-radius: 5px;
     cursor: pointer;
 }
-.cis-benchmark button:hover, .add-client button:hover {
+.benchmark-container button:hover, .add-client button:hover {
     background-color: #218838;
 }
+
+#add-benchmark {
+    /*object-position:left bottom;*/
+}
+
 .auto-scan-progress {
     text-align: center;
     padding: 20px;
@@ -79,4 +90,52 @@ header button:hover {
 .add-client {
     text-align: center;
     margin-top: 20px;
+}
+
+/*Login Page styles*/
+.login-body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding-right:35px;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container button {
+    width: 107%;
+    padding: 10px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background-color: #45a049;
 }
