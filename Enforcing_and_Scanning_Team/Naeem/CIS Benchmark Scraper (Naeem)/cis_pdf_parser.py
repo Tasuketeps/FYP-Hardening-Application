@@ -67,15 +67,7 @@ def main():
         if rerule is not None:
             CISName = rerule.group(0).strip().replace('\n','')
             logger.info("*** Document found name: {} ***".format(CISName))
-            if "Red Hat Enterprise Linux 7" in CISName:
-                pattern = "(\d+(?:\.\d.\d*)+)(.*?)(\(Automated\)|\(Manual\))"
-            elif "Debian Linux 11" in CISName:
-                pattern = "(\d+(?:\.\d.\d*)+)(.*?)(\(Automated\)|\(Manual\))"
-            elif "Microsoft Windows Server 2019" in CISName:
-                pattern = "(\d+(?:\.\d+)+)\s\(((L[12])|(NG))\)(.*?)(\(Automated\)|\(Manual\))"
-            elif "Microsoft  Windows 10 Enterprise" in CISName:
-                pattern = "(\d+(?:\.\d+)+)\s\(((L[12])|(NG)|(BL))\)(.*?)(\(Automated\)|\(Manual\))"
-            elif "Microsoft Windows 10 Stand-alone" in CISName:
+            if "Microsoft Windows 10 Stand-alone" in CISName:
                 pattern = "(\d+(?:\.\d+)+)\s\(((L[12])|(NG)|(BL))\)(.*?)(\(Automated\)|\(Manual\))"
             else:
                 raise ValueError("Could not find a matching regex for {}".format(CISName))
