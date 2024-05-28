@@ -67,7 +67,7 @@ def main():
         if rerule is not None:
             CISName = rerule.group(0).strip().replace('\n','')
             logger.info("*** Document found name: {} ***".format(CISName))
-            if "Microsoft Windows 10 Stand-alone" in CISName:
+            if "Microsoft Windows 11 Enterprise" in CISName:
                 pattern = "(\d+(?:\.\d+)+)\s\(((L[12])|(NG)|(BL))\)(.*?)(\(Automated\)|\(Manual\))"
             else:
                 raise ValueError("Could not find a matching regex for {}".format(CISName))
@@ -99,7 +99,8 @@ def main():
             [
                 "Rule",
                 "Remediation",
-                "UI Path"
+                "UI Path",
+                "Audit"
             ]
         )
 
@@ -209,7 +210,7 @@ def main():
                         if row_count not in seenList:
                             seenList = [row_count]
                             logger.info("*** Writing the following rule to csv: ***")
-                            row = [rule, rem, ui_path]
+                            row = [rule, rem, ui_path,audit]
                             logger.info(row)
                             rule_writer.writerow(row)
                 page += 1
