@@ -1,4 +1,4 @@
-import re
+# this script converts the setup.inf file into a csv file for easier usage
 import csv
 inf_file_path = 'setup.inf'
 

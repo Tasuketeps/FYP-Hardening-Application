@@ -1,8 +1,10 @@
+# this script displays policies based off the setup.inf with reference to the reference file
+
 import csv
 
 data_dict = {}
 
-with open('output.csv', mode='r', newline='', encoding='utf-8') as csv_file:
+with open('scraped_data.csv', mode='r', newline='', encoding='utf-8') as csv_file:
     csv_reader = csv.reader(csv_file)
     
     # Iterate through the rows of the CSV
