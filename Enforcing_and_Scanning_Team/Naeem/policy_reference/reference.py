@@ -17,4 +17,11 @@ if data_dict:
     first_key = next(iter(data_dict))  # Get the first key
     del data_dict[first_key]  # Delete the key and its value
 # Print the resulting dictionary
-print(data_dict)
+
+
+
+for key, value in zip(data_dict.keys(), data_dict.values()):
+    print("Row Data:")
+    print(f"Policy name: {key}")
+    print(f"Constant Name: {value}")
+    print("-" * 40)

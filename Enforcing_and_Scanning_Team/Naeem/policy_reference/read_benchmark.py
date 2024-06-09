@@ -32,4 +32,11 @@ for encoding in encodings:
         print(f"Error decoding CSV file with encoding: {encoding}")
 
 # Print the list of dictionaries
-print(data_list)
+# print(data_list)
+
+# Iterate through each dictionary and print the contents
+for row_dict in data_list:
+    print("Row Data:")
+    for key, value in row_dict.items():
+        print(f"{key}: {value}")
+    print("-" * 40)

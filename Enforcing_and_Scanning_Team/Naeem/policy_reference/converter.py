@@ -2,15 +2,6 @@ import re
 import csv
 inf_file_path = 'setup.inf'
 
-sid = {
-        "*S-1-1-0": "Everyone",
-        "*S-1-5-19": "LOCAL SERVICE",
-        "*S-1-5-20": "NETWORK SERVICE",
-        "*S-1-5-32-544": "Administrators",
-        "*S-1-5-32-545": "Users",
-        "*S-1-5-32-551": "Backup Operators"
-    }
-
 # Open the .inf file and read its contents as binary
 with open(inf_file_path, 'rb') as inf_file:
     inf_contents_binary = inf_file.read()
