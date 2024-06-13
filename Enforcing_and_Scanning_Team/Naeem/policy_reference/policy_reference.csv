@@ -1,4 +1,22 @@
 ﻿Group Policy Setting,Constant Name
+Enforce password history,PasswordHistorySize
+Maximum password age,MaximumPasswordAge
+Minimum password age,MinimumPasswordAge
+Minimum password length,MinimumPasswordLength
+Password must meet complexity requirements,PasswordComplexity
+Store passwords using reversible encryption,ClearTextPassword
+Account lockout duration,LockoutDuration
+Account lockout threshold,LockoutBadCount
+Reset lockout counter after,ResetLockoutCount
+Audit account logon events,AuditLogonEvents
+Audit account management,AuditAccountManage
+Audit directory service access,AuditDSAccess
+Audit logon events,AuditAccountLogon
+Audit object access,AuditObjectAccess
+Audit policy change,AuditPolicyChange
+Audit privilege use,AuditPrivilegeUse
+Audit process tracking,AuditProcessTracking
+Audit system events,AuditSystemEvents
 Access Credential Manager as a trusted caller,SeTrustedCredManAccessPrivilege
 Access this computer from the network,SeNetworkLogonRight
 Act as part of the operating system,SeTcbPrivilege
@@ -69,24 +87,6 @@ Interactive Logon: Display user information when session is locked,"Machine\Soft
 Interactive logon: Do not require CTRL+ALT+DEL,MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\DisableCAD
 Interactive logon: Don't display last signed-in,MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName
 Interactive logon: Don't display username at sign-in,MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName
-Enforce password history,
-Maximum password age,MaximumPasswordAge
-Minimum password age,MinimumPasswordAge
-Minimum password length,MinimumPasswordLength
-Password must meet complexity requirement,PasswordComplexity
-Store passwords using reversible encryption for all users in the domain,ClearTextPassword
-Account lockout duration,
-Account lockout threshold,LockoutBadCount
-Reset lockout counter after,
-Audit account logon events,AuditLogonEvents
-Audit account management,AuditAccountManage
-Audit directory service access,AuditDSAccess
-Audit logon events,AuditAccountLogon
-Audit object access,AuditObjectAccess
-Audit policy change,AuditPolicyChange
-Audit privilege use,AuditPrivilegeUse
-Audit process tracking,AuditProcessTracking
-Audit system events,AuditSystemEvents
 Interactive logon: Message text for users attempting to logon,MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\LegalNoticeText
 Interactive logon: Message title for users attempting to logon,MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\LegalNoticeCaption
 Interactive logon: Number of previous logons to cache (in case domain controller is not available),MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\CachedLogonsCount 
@@ -102,6 +102,7 @@ Microsoft network server: Digitally sign communications (always),MACHINE\System\
 Microsoft network server: Digitally sign communications (if client agrees),MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\EnableSecuritySignature
 Microsoft network server: Disconnect clients when logon hours expire,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\EnableForcedLogOff
 Microsoft network server: Server SPN target name validation level,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\SmbServerNameHardeningLevel
+Network access: Allow anonymous SID/Name translation, LSAAnonymousNameLookup
 Network access: Do not allow anonymous enumeration of SAM accounts,MACHINE\System\CurrentControlSet\Control\Lsa\RestrictAnonymousSAM
 Network access: Do not allow anonymous enumeration of SAM accounts and shares,MACHINE\System\CurrentControlSet\Control\Lsa\RestrictAnonymous
 Network access: Do not allow storage of passwords and credentials for network authentication,MACHINE\System\CurrentControlSet\Control\Lsa\DisableDomainCreds

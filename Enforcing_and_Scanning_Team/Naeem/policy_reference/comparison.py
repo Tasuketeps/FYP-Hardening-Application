@@ -81,17 +81,21 @@ sid = {
         "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
     }
 
-# loop through the client policies 
 # for key, value in data_dict.items():
-
-#     # loop through the reference sheet for policy constant names
+#     # Split the value by comma to handle multiple SIDs
+#     values = value.split(',')
+    
+#     # Replace SIDs with corresponding names
+#     converted_values = [sid.get(v, v) for v in values]
+    
+#     # Join the converted values back into a single string
+#     converted_value = ','.join(converted_values)
+    
 #     for ref_key, ref_value in reference_dict.items():
-
-#         # check if the policy data matches the constant name
 #         if key == ref_value:
 #             for row_dict in data_list:
 #                 if row_dict["Setting"] == ref_key:
-#                     entry = (ref_key, value, row_dict["RecommendedValue"])
+#                     entry = (ref_key, converted_value, row_dict["RecommendedValue"])
 #                     if entry not in unique_entries:  # Check if entry is unique
 #                         unique_entries.add(entry)  # Add to set of unique entries
 #                         counter += 1
@@ -99,25 +103,43 @@ sid = {
 #                         rec_value = row_dict["RecommendedValue"]
 #                         print("-" * 40)
 #                         print(f"Policy name: {ref_key}")
-#                         print(f"Value: {value}")
+#                         print(f"Value: {converted_value}")
 #                         print(f"Recommended Value: {rec_value}")
 #                         print(f"ConstantName: {key}")
 #                         print("-" * 40 + str(counter))
 
-for key, value in data_dict.items():
-    # Split the value by comma to handle multiple SIDs
-    values = value.split(',')
+sid = {
+    "*S-1-1-0": "Everyone",
+    "*S-1-5-19": "LOCAL SERVICE",
+    "*S-1-5-20": "NETWORK SERVICE",
+    "*S-1-5-32-544": "Administrators",
+    "*S-1-5-32-545": "Users",
+    "*S-1-5-32-551": "Backup Operators",
+    "*S-1-5-6": "Service",
+    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
+}
+
+counter = 0
+unique_entries = set()  # To keep track of unique entries
+
+output_data = []  # List to hold output data
+
+for ref_key, ref_value in reference_dict.items():
+    found = False  # Flag to check if the policy is found in data_dict
     
-    # Replace SIDs with corresponding names
-    converted_values = [sid.get(v, v) for v in values]
-    
-    # Join the converted values back into a single string
-    converted_value = ','.join(converted_values)
-    
-    for ref_key, ref_value in reference_dict.items():
-        if key == ref_value:
-            for row_dict in data_list:
-                if row_dict["Setting"] == ref_key:
+    for row_dict in data_list:
+        if row_dict["Setting"] == ref_key:
+            for key, value in data_dict.items():
+                if key == ref_value:
+                    # Split the value by comma to handle multiple SIDs
+                    values = value.split(',')
+                    
+                    # Replace SIDs with corresponding names
+                    converted_values = [sid.get(v, v) for v in values]
+                    
+                    # Join the converted values back into a single string
+                    converted_value = ','.join(converted_values)
+
                     entry = (ref_key, converted_value, row_dict["RecommendedValue"])
                     if entry not in unique_entries:  # Check if entry is unique
                         unique_entries.add(entry)  # Add to set of unique entries
@@ -131,3 +153,50 @@ for key, value in data_dict.items():
                         print(f"ConstantName: {key}")
                         print("-" * 40 + str(counter))
 
+                        # Add to output data list
+                        output_data.append({
+                            "Policy name": ref_key,
+                            "Value": converted_value,
+                            "Recommended Value": rec_value,
+                            "ConstantName": key
+                        })
+                    found = True
+                    break
+    
+            if found:
+                break
+            
+            # If policy is found in row_dict but not in data_dict, add it with "Not Set" value
+            if not found:
+                rec_value = row_dict["RecommendedValue"]
+                entry = (ref_key, "Not Set", rec_value)
+                if entry not in unique_entries:  # Check if entry is unique
+                    unique_entries.add(entry)  # Add to set of unique entries
+                    counter += 1
+                    print("Row Data:")
+                    print("-" * 40)
+                    print(f"Policy name: {ref_key}")
+                    print(f"Value: Not Set")
+                    print(f"Recommended Value: {rec_value}")
+                    print(f"ConstantName: {ref_value}")
+                    print("-" * 40 + str(counter))
+
+                    # Add to output data list
+                    output_data.append({
+                        "Policy name": ref_key,
+                        "Value": "Not Set",
+                        "Recommended Value": rec_value,
+                        "ConstantName": ref_value
+                    })
+
+                    
+
+# Write the output data to a CSV file
+with open('comparison.csv', mode='w', newline='', encoding='utf-8') as csv_file:
+    fieldnames = ["Policy name", "Value", "Recommended Value", "ConstantName"]
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    
+    writer.writeheader()
+    writer.writerows(output_data)
+
+print("Data saved to output.csv")   

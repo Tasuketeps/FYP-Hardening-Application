@@ -6,7 +6,7 @@ encodings = ['utf-8', 'latin1', 'utf-16']
 # Initialize an empty list to store dictionaries
 data_list = []
 
-# Try opening the CSV file with different encodings
+# Try opening the CSV file with different encodingscls
 for encoding in encodings:
     try:
         with open('cis_benchmark.csv', mode='r', newline='', encoding=encoding) as csv_file:
