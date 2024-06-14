@@ -38,12 +38,25 @@ app.post('/user/login',function(req, res){
   }); 
 }); 
 
+
 app.post('/user/logout', function(req,res){
 	console.log("..logging out.");
 	//res.clearCookie('session-id'); //clears the cookie in the response
 	//res.setHeader('Content-Type', 'application/json');
   	res.json({success: true, status: 'Log out successful!'});
 
+});
+
+
+app.post("/user/", (req, res, next) => {
+  user.insert(req.body, (error, userid) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send();
+      return;
+    };
+    res.status(201).send({userid});
+  });
 });
 
 
