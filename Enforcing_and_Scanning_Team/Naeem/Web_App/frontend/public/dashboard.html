@@ -55,6 +55,23 @@
         .navbar .menu a {
             margin-left: 10px;
         }
+        .login-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .login-btn {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin-top: 20px;
+            border-radius: 10px; /* Rounded corners */
+        }
+        .login-btn:hover {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
@@ -64,20 +81,18 @@
         <div class="menu">
             <a href="dashboard.html">Home</a>
             <a href="index.html">Login</a>
-            <a href="services.html">Services</a>
-            <a href="contact.html">Contact</a>
         </div>
+    </div>
+
+    <div class="login-container">
+        <h1>Welcome to SP's Automated Hardening System for Win OS</h1>   
+        <h2>Accessible only to Administrators</h2>
+        <h2>To proceed, please log in with your Admin Credentials</h2>
+        <button class="login-btn" onclick="location.href='index.html'">Log in</button>
     </div>
 
 </body>
 </html>
-
-
-
-<body>
-    <div class="row justify-content-center">
-        <h1>Welcome to SP's Automated Hardening System for Win OS</h1>   
-    </div>
 
 
     <script>
