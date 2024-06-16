@@ -6,11 +6,13 @@ const fileUpload = require('express-fileupload');
 const app = express();
 var verifyToken = require('../auth/verifyToken.js');
 const cors = require('cors');
+const { exec } = require('child_process');
 
 app.options('*',cors());
 app.use(cors());
 
 const user = require("../models/user");
+const scan = require("../models/scan");
 
 // import body-parser middleware
 const bodyParser = require("body-parser");
@@ -36,15 +38,92 @@ app.post('/user/login',function(req, res){
           res.send(err);
       }
   }); 
-}); 
-
-app.post('/user/logout', function(req,res){
-	console.log("..logging out.");
-	//res.clearCookie('session-id'); //clears the cookie in the response
-	//res.setHeader('Content-Type', 'application/json');
-  	res.json({success: true, status: 'Log out successful!'});
-
 });
+
+
+app.get('/execute-secedit', (req, res) => {
+    exec('sh ./automate_process.sh', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error.message);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+        console.log(`Script stdout: ${stdout}`);
+        res.send(`Script executed successfully: ${stdout}`);
+    });
+});
+
+app.get('/scan', (req, res) => {
+    exec('expect controller/arp_scan.sh', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error + __dirname);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+        console.log(`Script stdout: ${stdout}`);
+        res.send(`${stdout}`);
+    });
+});
+
+app.get('/scanInfo', (req, res) => {
+    const ipaddr = req.query.ipaddr
+    exec('sh controller/scanInfo.sh ' + ipaddr, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error + __dirname);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+        console.log(`Script stdout: ${stdout}`);
+	res.send(`${stdout}`)
+    });
+});
+
+app.get('/policy-scan', (req, res) => {
+    const ipaddr = req.query.ipaddr
+    exec('sh controller/automate_process.sh ' + ipaddr, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error + __dirname);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+	// Extract filename from stdout
+        const filenameMatch = stdout.match(/Transferring file to the web server\.\.\.\n(\S+)/);
+        const filename = filenameMatch ? filenameMatch[1] : 'unknown';
+        // Extract the datetime from the filename (assuming the filename format is consistent)
+        const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})/);
+        const createdAt = dateMatch ? dateMatch[1].replace(/_/g, ' ').replace(/-/g, ':').replace(' ', 'T') + 'Z' : new Date().toISOString();
+        scan.savePolicy(filename,ipaddr,createdAt,createdAt,(error, result) => {
+    if (error) {
+      res.status(500).send(error);
+      return;
+    }		
+    res.status(200).send(createdAt);
+return;
+  });
+	//res.send(`${stdout}`);
+    });
+});
+
 
 
 module.exports = app
