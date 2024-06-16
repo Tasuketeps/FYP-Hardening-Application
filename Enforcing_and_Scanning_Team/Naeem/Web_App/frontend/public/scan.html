@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="scan.html">Network</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="Logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="justify-content-center">
+        <h1>Connected Devices to the Network</h1>
+        <div id="loading" class="spinner-container">
+            <div class="loader"></div>
+        </div>
+        <button id="scanButton" class="btn btn-primary" style="display:none">Scan Selected</button>
+        <div id="result" class="table-overlay" style="display: none;"></div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            var settings = {
+                "url": "http://192.168.126.148:3000/scan",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            // Show the loading spinner
+            $('#loading').show();
+            $('#result').hide();
+
+            $.ajax(settings).done(function (response) {
+                console.log("Full response:", response);
+
+                // Extracting the relevant information from the response
+                var resultDiv = $('#result');
+                var lines = response.split('\n');
+                var devices = [];
+
+                lines.forEach(function (line) {
+                    console.log("Processing line:", line);
+
+                    // Trim the line to remove any leading or trailing whitespace
+                    line = line.trim();
+
+                    // Regex to match IP address and MAC address followed by manufacturer
+                    var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
+
+                    if (match) {
+                        console.log("Matched line:", match);
+                        var ipAddress = match[1];
+                        var lastOctet = parseInt(ipAddress.split('.').pop());
+
+                        // Filter out IP addresses ending in .1, .2, or .254
+                        if (lastOctet !== 1 && lastOctet !== 2 && lastOctet !== 254) {
+                            devices.push({
+                                ip: match[1],
+                                mac: match[2],
+                                manufacturer: match[3]
+                            });
+                        }
+                    }
+                });
+
+                console.log("Devices:", devices);
+
+                // Generating HTML content
+                if (devices.length > 0) {
+                    var table = $('<table></table>').addClass('table table-bordered custom-table');
+                    table.append('<tr><th>Select</th><th>IP Address</th><th>MAC Address</th><th>Manufacturer</th><th>Last Scan at</th></tr>');
+                    devices.forEach(function (device) {
+                        var row = $('<tr></tr>').attr('data-ip', device.ip);
+                        row.append('<td><input type="checkbox" class="select-device" value="' + device.ip + '"></td>');
+                        row.append('<td><a href="individualScan.html" class="ipaddr">' + device.ip + '</a></td>');
+                        row.append('<td>' + device.mac + '</td>');
+                        row.append('<td>' + device.manufacturer + '</td>');
+                        row.append('<td class="lastScan"></td>');
+
+                        table.append(row);
+                    });
+                    resultDiv.html(table);
+                    $('#scanButton').show();
+                } else {
+                    resultDiv.html('<p>No connected devices found.</p>');
+                    $('#scanButton').hide();
+                }
+
+                // Hide the loading spinner and show the result
+                $('#loading').hide();
+                $('#result').show();
+            }).fail(function () {
+                // Hide the loading spinner and show an error message if the request fails
+                $('#loading').hide();
+                $('#result').html('<p>Error loading data. Please try again later.</p>').show();
+            });
+
+
+            $(document).on("click", ".ipaddr", function () {
+                var ipaddress = $(this).text()
+                // Store the game name and platform in the local storage
+                localStorage.setItem('selectedIp', ipaddress);
+
+            });
+
+            // Handle the click event of the scan button
+            $('#scanButton').on('click', function () {
+                // Grey out the table and show the scanning message
+                $('#result').addClass('grayed-out');
+
+                // Get selected IP addresses
+                var selectedIps = [];
+                $('.select-device:checked').each(function () {
+                    selectedIps.push($(this).val());
+                });
+
+                // Check if any IP addresses are selected
+                if (selectedIps.length === 0) {
+                    alert('No devices selected.');
+                    $('#result').removeClass('grayed-out');
+                    return;
+                }
+
+                // Iterate through selected IP addresses and call the specific endpoint
+                selectedIps.forEach(function (ip, index) {
+                    setTimeout(function () {
+                        var settings = {
+                            "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ip,
+                            "method": "GET",
+                            "timeout": 0,
+                        };
+
+                        $.ajax(settings).done(function (response) {
+                            console.log("Scan result for " + ip + ":", response);
+                            // Handle the response as needed
+
+                            $('tr[data-ip="' + ip + '"]').addClass('scan-success');
+                            // Remove the grey out and the scanning message when the last IP is processed
+
+                            // Update the lastscan column for the corresponding IP
+                            $('tr[data-ip="' + ip + '"] .lastScan').text(response);
+                            if (index === selectedIps.length - 1) {
+                                $('#result').removeClass('grayed-out');
+                            }
+                        }).fail(function () {
+                            console.error("Failed to scan " + ip);
+
+                            // Remove the grey out and the scanning message when the last IP is processed
+                            if (index === selectedIps.length - 1) {
+                                $('#result').removeClass('grayed-out');
+                            }
+                        });
+                    }, index * 1000); // Adding a delay of 1 second between each request for better visualization
+                });
+            });
+
+            $(document).on("click", ".ipaddr", function () {
+                var ipaddress = $(this).text();
+                // Store the IP address in the local storage
+                localStorage.setItem('selectedIp', ipaddress);
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
