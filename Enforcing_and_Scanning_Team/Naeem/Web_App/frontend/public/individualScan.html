@@ -160,7 +160,7 @@
                             var pair = line.split(', ');
                             // Check if the line has both key and value
                             if (pair.length === 3) {
-                                formattedHTML += '<tr><th scope="row">' + pair[0].trim() + '</th><td>' + pair[1].trim() + '</td><td>' + pair[2].trim() + '</td></tr>';
+                                formattedHTML += '<tr><th scope="row">' + pair[0].trim() + '</th><td>' + pair[1].trim().replace(/'/g, '') + '</td><td>' + pair[2].trim() + '</td></tr>';
                             }
                         }
                     });
