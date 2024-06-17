@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 
 
@@ -24,7 +25,7 @@
             padding: 0;
         }
         .navbar {
-            display:flex;
+            display: flex;
             justify-content: center;
             align-items: center;
             background-color: blue;
@@ -54,6 +55,23 @@
         .navbar .menu a {
             margin-left: 10px;
         }
+        .login-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .login-btn {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin-top: 20px;
+            border-radius: 10px; /* Rounded corners */
+        }
+        .login-btn:hover {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
@@ -66,39 +84,15 @@
         </div>
     </div>
 
+    <div class="login-container">
+        <h1>Welcome to SP's Automated Hardening System for Win OS</h1>   
+        <h2>Accessible only to Administrators</h2>
+        <h2>To proceed, please log in with your Admin Credentials</h2>
+        <button class="login-btn" onclick="location.href='index.html'">Log in</button>
+    </div>
+
 </body>
 </html>
-
-
-
-
-<body>
-    <div class="row justify-content-center">
-        <h1>Admin Login Page</h1>
-        <div class="login-form">
-            <form action="">
-                <h2 class="text-center">Log in</h2>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="username" placeholder="Username" required="required">
-                </div>
-                <div class="form-group">
-                    <div class="input-group" id="show_hide_password">
-                        <input class="form-control" id="pwd" placeholder="Password" type="password">
-                        <div class="input-group-addon">
-                            <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">Remember Me</label>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block" id="Login">Log in</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
 
     <script>
@@ -109,7 +103,7 @@
                 var data = "{\"username\":\"" + username + "\", \"password\":\"" + pwd + "\"}";
                 console.log(data);
                 $.ajax({
-                    url: 'http://192.168.126.148:3000/user/login',
+                    url: 'http://localhost:3000/user/login',
                     type: 'POST',
                     data: data,
                     contentType: "application/json; charset=utf-8",
@@ -118,7 +112,7 @@
                         if (data != null) {
                             localStorage.setItem('token', data.token);
                             localStorage.setItem('userInfo', data.UserData);
-                            window.location.assign("http://localhost:3001/home.html");
+                            window.location.assign("http://localhost:3001/profile.html");
                         } else {
                             console.log("Error");
                         }
@@ -145,6 +139,10 @@
                     $('#show_hide_password i').removeClass("fa-eye-slash");
                     $('#show_hide_password i').addClass("fa-eye");
                 }
+            });
+
+            $("#join").click(function () {
+                window.location.assign("http://localhost:3001/register.html");
             });
 
         }); 

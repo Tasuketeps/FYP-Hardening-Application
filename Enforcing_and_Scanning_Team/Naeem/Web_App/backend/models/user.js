@@ -48,7 +48,41 @@ const user = {
         });
       }
     });
-  }
-}
+  },
 
+  
+    insert: function(user, callback) {
+    var dbConn = db.getConnection();
+    dbConn.connect(function (err) {
+    
+        if (err) {//database connection gt issue!
+            console.log(err);
+            return callback(err, null);
+          } else {
+
+   const insertUserQuery =
+   `
+   INSERT INTO user (username, email, password, type)
+   VALUES (?, ?, ?, ?);
+   `;
+   dbConn.query(
+     insertUserQuery,
+     [user.username, user.email, user.password, user.type],
+     (error, results) => {
+   dbConn.end();
+        if (error) {
+        console.log(error)
+        return callback(error, null);
+       
+     };
+     return callback(null, results.insertId);
+    });
+   }
+  });
+},
+
+
+
+  
+}
 module.exports = user
