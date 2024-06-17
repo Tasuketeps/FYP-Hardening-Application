@@ -223,31 +223,35 @@
         $('#checkDatabase').on('click', function () {
             // Get selected IP addresses
             var selectedIps = [];
-            $('.select-device:checked').each(function () {
+            $('.select-device').each(function () {
                 selectedIps.push($(this).val());
             });
-            // Iterate through selected IP addresses and call the specific endpoint
-            selectedIps.forEach(function (ip) {
-                $.ajax({
-                    "url": "http://192.168.126.148:3000/checkPolicy?ipaddr=" + ip,
-                    "method": "GET",
-                    "timeout": 0,
-                    success: function (response) {
-                        console.log("Latest scan for " + ip + ":", response);
-                        var lastScanTime = response[0].created_at;
-                        var scanID = response[0].scanid
-                        $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
-                        $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
-                    },
-                    error: function (error) {
-                        if (error.status == 404) {
-                            var lastScanTime = "Never scanned"
-                            var scanID = "Null"
+
+            // Iterate through selected IP addresses with a delay between each call
+            selectedIps.forEach(function (ip, index) {
+                setTimeout(function () {
+                    $.ajax({
+                        "url": "http://192.168.126.148:3000/checkPolicy?ipaddr=" + ip,
+                        "method": "GET",
+                        "timeout": 0,
+                        success: function (response) {
+                            console.log("Latest scan for " + ip + ":", response);
+                            var lastScanTime = response[0].created_at;
+                            var scanID = response[0].scanid;
                             $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
                             $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            if (error.status == 404) {
+                                var lastScanTime = "Never scanned";
+                                var scanID = "Null";
+                                $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
+                                $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                            }
                         }
-                    }
-                });
+                    });
+                }, index * 1000); // Delay each iteration by 1 second (1000 milliseconds)
             });
         });
     </script>
