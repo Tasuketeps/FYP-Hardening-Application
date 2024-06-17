@@ -1,7 +1,9 @@
 import PyPDF2
 import re
 import csv
+import sys
 
+csv_file = sys.argv[1]
 # Function to check what type of policy based on it's ID
 
 def check_policy(rule_id):
@@ -49,7 +51,7 @@ def check_policy(rule_id):
     
 
 # Open the PDF file
-with open('CIS_Microsoft_Windows_11_Enterprise_Benchmark_v3.0.0.pdf', 'rb') as pdf_file:
+with open(csv_file, 'rb') as pdf_file:
     # Create a PDF reader object
     pdf_reader = PyPDF2.PdfReader(pdf_file)
 
@@ -96,7 +98,7 @@ with open('CIS_Microsoft_Windows_11_Enterprise_Benchmark_v3.0.0.pdf', 'rb') as p
     pattern = r"(\d+\.\d+(?:\.\d+){0,4})\s+'([^']+)'\s+is set to\s+'([^']+)'"
 
 
-    with open('test.csv', 'w') as out_file:
+    with open(str(csv_file)+'.csv', 'w') as out_file:
         rule_writer = csv.writer(
             out_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )

@@ -1,8 +1,11 @@
 import csv
-
+import sys
+device_policies = sys.argv[1]
+benchmark_csv = sys.argv[2]
+reference = sys.argv[3]
 data_dict = {}
 
-with open('scraped_data.csv', mode='r', newline='', encoding='utf-8') as csv_file:
+with open(device_policies, mode='r', newline='', encoding='utf-8') as csv_file:
     csv_reader = csv.reader(csv_file)
     
     # Iterate through the rows of the CSV
@@ -20,7 +23,7 @@ if data_dict:
 reference_dict = {}
 
 # Open the CSV file
-with open('policy_reference.csv', mode='r', newline='', encoding='utf-8') as csv_file:
+with open(reference, mode='r', newline='', encoding='utf-8') as csv_file:
     csv_reader = csv.reader(csv_file)
     
     # Iterate through the rows of the CSV
@@ -42,7 +45,7 @@ data_list = []
 # Try opening the CSV file with different encodings
 for encoding in encodings:
     try:
-        with open('cis_benchmark.csv', mode='r', newline='', encoding=encoding) as csv_file:
+        with open(benchmark_csv, mode='r', newline='', encoding=encoding) as csv_file:
             csv_reader = csv.reader(csv_file)
             headers = next(csv_reader)  # Read the headers
 

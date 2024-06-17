@@ -1,6 +1,10 @@
 # this script converts the setup.inf file into a csv file for easier usage
 import csv
-inf_file_path = 'setup.inf'
+import sys 
+inf_file_path = sys.argv[1]
+csv_file = sys.argv[2]
+
+# inf_file_path = 'setup.inf'
 
 # Open the .inf file and read its contents as binary
 with open(inf_file_path, 'rb') as inf_file:
@@ -26,9 +30,12 @@ for line in inf_contents_text.splitlines():
 
 
 # Specify the CSV file path
-csv_file = 'output.csv'
+# csv_file = 'output.csv'
 
 # Write the dictionary to CSV
+
+
+
 with open(csv_file, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Policy Constant Name', 'Current Value'])

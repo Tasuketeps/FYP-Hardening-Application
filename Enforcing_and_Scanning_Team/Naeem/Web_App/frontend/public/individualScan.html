@@ -37,14 +37,18 @@
         </div>
     </nav>
     <div class="justify-content-center">
-        <h1>Scanning device with ip address:</h1>
         <h1 id="ipaddr"></h1>
     </div>
     <div id="loading" class="spinner-container">
+        <h1>Scanning device...</h1>
         <div class="loader"></div>
     </div>
     <div id="result"></div>
-    <button class="scanPolicy">Start New Scan</button>
+    <div class="container">
+        <div id="policyResults" class="table-responsive"></div>
+    </div>
+
+    <button class="btn btn-primary scanPolicy">Start New Scan</button>
     <div id="terminalOutput"></div>
 
 
@@ -52,10 +56,9 @@
     <script>
         $(document).ready(function () {
             var ipaddress = localStorage.getItem('selectedIp');
+            var scanid = localStorage.getItem('scanid');
             $('#ipaddr').text(ipaddress);
             // Show the loading spinner
-
-
             var settings = {
                 "url": "http://192.168.126.148:3000/scanInfo?ipaddr=" + ipaddress,
                 "method": "GET",
@@ -64,6 +67,7 @@
 
             $('#loading').show();
             $('#result').hide();
+            $('#policyResults').hide();
 
             $.ajax(settings).done(function (response) {
                 console.log(response);
@@ -73,7 +77,7 @@
                 var lines = response.split('\n');
 
                 // Example: Displaying the response in a formatted way
-                var formattedHTML = '<h2>Scan Results</h2>';
+                var formattedHTML = '<h2>System Information</h2>';
                 formattedHTML += '<table class="table table-bordered custom-table">';
 
                 // Iterate through each line and parse key-value pairs
@@ -94,6 +98,7 @@
                 resultDiv.html(formattedHTML);
                 $('#loading').hide();
                 $('#result').show();
+                $('#policyResults').show();
             });
 
             $(document).on("click", ".scanPolicy", function () {
@@ -129,9 +134,50 @@
                     });
 
                 });
-
-
             });
+
+            $.ajax({
+                "url": "http://192.168.126.148:3000/openPolicy?scanid=" + scanid,
+                "method": "GET",
+                "timeout": 0,
+                success: function (response) {
+                    console.log(response);
+                    var policyResults = $('#policyResults');
+                    // Split the response into lines
+                    var lines = response.split('\n');
+
+                    // Example: Displaying the response in a formatted way
+                    var formattedHTML = '<h2>Latest Scanned Policies</h2>';
+                    formattedHTML += '<table class="table table-bordered policy-table">';
+
+                    // Iterate through each line and parse key-value pairs
+                    lines.forEach(function (line) {
+                        // Remove leading and trailing spaces
+                        line = line.trim();
+                        // Check if the line is not empty
+                        if (line.length > 0) {
+                            // Split the line into key and value using colon as the separator
+                            var pair = line.split(', ');
+                            // Check if the line has both key and value
+                            if (pair.length === 3) {
+                                formattedHTML += '<tr><th scope="row">' + pair[0].trim() + '</th><td>' + pair[1].trim() + '</td><td>' + pair[2].trim() + '</td></tr>';
+                            }
+                        }
+                    });
+                    formattedHTML += '</table>';
+                    policyResults.html(formattedHTML);
+                },
+                error: function (error) {
+                    var policyResults = $('#policyResults');
+                    var formattedHTML = '<h2>Error finding latest scanned policies</h2>';
+                    if (error.status == 500) {
+                        console.log('.csv file was not found')
+                    }
+                    policyResults.html(formattedHTML);
+
+                }
+            });
+
 
 
         });

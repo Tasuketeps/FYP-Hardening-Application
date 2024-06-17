@@ -41,7 +41,11 @@
         <div id="loading" class="spinner-container">
             <div class="loader"></div>
         </div>
+        <button id="selectAllBtn" style="display: none;">All</button><button id="deselectAllBtn"
+            style="display: none">Clear</button>
+        <button id="checkDatabase" class="btn btn-primary" style="display: none;">Check Database</button>
         <button id="scanButton" class="btn btn-primary" style="display:none">Scan Selected</button>
+
         <div id="result" class="table-overlay" style="display: none;"></div>
     </div>
 
@@ -96,22 +100,30 @@
                 // Generating HTML content
                 if (devices.length > 0) {
                     var table = $('<table></table>').addClass('table table-bordered custom-table');
-                    table.append('<tr><th>Select</th><th>IP Address</th><th>MAC Address</th><th>Manufacturer</th><th>Last Scan at</th></tr>');
+                    table.append('<tr><th>Select</th><th>IP Address</th><th>MAC Address</th><th>Manufacturer</th><th>Scan ID</th><th>Last Scan at</th></tr>');
                     devices.forEach(function (device) {
                         var row = $('<tr></tr>').attr('data-ip', device.ip);
                         row.append('<td><input type="checkbox" class="select-device" value="' + device.ip + '"></td>');
                         row.append('<td><a href="individualScan.html" class="ipaddr">' + device.ip + '</a></td>');
                         row.append('<td>' + device.mac + '</td>');
                         row.append('<td>' + device.manufacturer + '</td>');
+                        row.append('<td class="scanID"></td>');
                         row.append('<td class="lastScan"></td>');
 
                         table.append(row);
                     });
                     resultDiv.html(table);
                     $('#scanButton').show();
+                    $('#checkDatabase').show();
+                    $('#selectAllBtn').show();
+                    $('#deselectAllBtn').show();
                 } else {
                     resultDiv.html('<p>No connected devices found.</p>');
                     $('#scanButton').hide();
+                    $('#checkDatabase').hide();
+                    $('#selectAllBtn').hide();
+                    $('#deselectAllBtn').hide();
+
                 }
 
                 // Hide the loading spinner and show the result
@@ -183,13 +195,58 @@
             });
 
             $(document).on("click", ".ipaddr", function () {
+                // Get the scanID from the same row as the clicked IP address
+                var scanID = $(this).closest('tr').find('.scanID').text();
                 var ipaddress = $(this).text();
                 // Store the IP address in the local storage
                 localStorage.setItem('selectedIp', ipaddress);
+                // Store the scanid in the local storage
+                localStorage.setItem('scanid', scanID);
             });
+            // Handle Select All button click
+            $('#selectAllBtn').on("click", function () {
+                $('.select-device').prop('checked', true); // Check all checkboxes
+            });
+
+            // Handle Deselect All button click
+            $('#deselectAllBtn').on("click", function () {
+                $('.select-device').prop('checked', false); // Uncheck all checkboxes
+            });
+
         });
 
 
+        // Handle the "Check Database" button click
+        $('#checkDatabase').on('click', function () {
+            // Get selected IP addresses
+            var selectedIps = [];
+            $('.select-device:checked').each(function () {
+                selectedIps.push($(this).val());
+            });
+            // Iterate through selected IP addresses and call the specific endpoint
+            selectedIps.forEach(function (ip) {
+                $.ajax({
+                    "url": "http://192.168.126.148:3000/checkPolicy?ipaddr=" + ip,
+                    "method": "GET",
+                    "timeout": 0,
+                    success: function (response) {
+                        console.log("Latest scan for " + ip + ":", response);
+                        var lastScanTime = response[0].created_at;
+                        var scanID = response[0].scanid
+                        $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
+                        $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                    },
+                    error: function (error) {
+                        if (error.status == 404) {
+                            var lastScanTime = "Never scanned"
+                            var scanID = "Null"
+                            $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
+                            $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                        }
+                    }
+                });
+            });
+        });
     </script>
 </body>
 

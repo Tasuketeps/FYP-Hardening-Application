@@ -1,4 +1,7 @@
 import csv
+import sys 
+
+csv_file = sys.argv[1]
 
 # List of encodings to try
 encodings = ['utf-8', 'latin1', 'utf-16']
@@ -9,7 +12,7 @@ data_list = []
 # Try opening the CSV file with different encodingscls
 for encoding in encodings:
     try:
-        with open('cis_benchmark.csv', mode='r', newline='', encoding=encoding) as csv_file:
+        with open(csv_file, mode='r', newline='', encoding=encoding) as csv_file:
             csv_reader = csv.reader(csv_file)
             headers = next(csv_reader)  # Read the headers
 
@@ -31,12 +34,10 @@ for encoding in encodings:
     except UnicodeDecodeError:
         print(f"Error decoding CSV file with encoding: {encoding}")
 
-# Print the list of dictionaries
-# print(data_list)
-
-# Iterate through each dictionary and print the contents
+counter=0
 for row_dict in data_list:
-    print("Row Data:")
+    counter+=1
+    print("Row Data:" + str(counter))
     for key, value in row_dict.items():
         print(f"{key}: {value}")
     print("-" * 40)
