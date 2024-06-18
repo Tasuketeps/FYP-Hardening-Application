@@ -175,7 +175,6 @@
                             scanid = response['insertId'];
                             createdAt = response['createdAt'];
                             // Handle the response as needed
-                            $('tr[data-ip="' + ip + '"] .lastScan').removeClass();
                             $('tr[data-ip="' + ip + '"]').addClass('scan-success');
                             // Remove the grey out and the scanning message when the last IP is processed
 
