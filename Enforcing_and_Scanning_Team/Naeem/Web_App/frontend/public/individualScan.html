@@ -98,6 +98,47 @@
                 resultDiv.html(formattedHTML);
                 $('#loading').hide();
                 $('#result').show();
+                $.ajax({
+                    "url": "http://192.168.126.148:3000/openPolicy?scanid=" + scanid,
+                    "method": "GET",
+                    "timeout": 0,
+                    success: function (response) {
+                        console.log(response);
+                        var policyResults = $('#policyResults');
+                        // Split the response into lines
+                        var lines = response.split('\n');
+
+                        // Example: Displaying the response in a formatted way
+                        var formattedHTML = '<h2>Latest Scanned Policies</h2>';
+                        formattedHTML += '<table class="table table-bordered policy-table">';
+
+                        // Iterate through each line and parse key-value pairs
+                        lines.forEach(function (line) {
+                            // Remove leading and trailing spaces
+                            line = line.trim();
+                            // Check if the line is not empty
+                            if (line.length > 0) {
+                                // Split the line into key and value using colon as the separator
+                                var pair = line.split(', ');
+                                // Check if the line has both key and value
+                                if (pair.length === 3) {
+                                    formattedHTML += '<tr><th scope="row">' + pair[0].trim() + '</th><td>' + pair[1].trim().replace(/'/g, '') + '</td><td>' + pair[2].trim() + '</td></tr>';
+                                }
+                            }
+                        });
+                        formattedHTML += '</table>';
+                        policyResults.html(formattedHTML);
+                    },
+                    error: function (error) {
+                        var policyResults = $('#policyResults');
+                        var formattedHTML = '<h2>Error finding latest scanned policies</h2>';
+                        if (error.status == 500) {
+                            console.log('.csv file was not found')
+                        }
+                        policyResults.html(formattedHTML);
+
+                    }
+                });
                 $('#policyResults').show();
             });
 
@@ -136,47 +177,7 @@
                 });
             });
 
-            $.ajax({
-                "url": "http://192.168.126.148:3000/openPolicy?scanid=" + scanid,
-                "method": "GET",
-                "timeout": 0,
-                success: function (response) {
-                    console.log(response);
-                    var policyResults = $('#policyResults');
-                    // Split the response into lines
-                    var lines = response.split('\n');
 
-                    // Example: Displaying the response in a formatted way
-                    var formattedHTML = '<h2>Latest Scanned Policies</h2>';
-                    formattedHTML += '<table class="table table-bordered policy-table">';
-
-                    // Iterate through each line and parse key-value pairs
-                    lines.forEach(function (line) {
-                        // Remove leading and trailing spaces
-                        line = line.trim();
-                        // Check if the line is not empty
-                        if (line.length > 0) {
-                            // Split the line into key and value using colon as the separator
-                            var pair = line.split(', ');
-                            // Check if the line has both key and value
-                            if (pair.length === 3) {
-                                formattedHTML += '<tr><th scope="row">' + pair[0].trim() + '</th><td>' + pair[1].trim().replace(/'/g, '') + '</td><td>' + pair[2].trim() + '</td></tr>';
-                            }
-                        }
-                    });
-                    formattedHTML += '</table>';
-                    policyResults.html(formattedHTML);
-                },
-                error: function (error) {
-                    var policyResults = $('#policyResults');
-                    var formattedHTML = '<h2>Error finding latest scanned policies</h2>';
-                    if (error.status == 500) {
-                        console.log('.csv file was not found')
-                    }
-                    policyResults.html(formattedHTML);
-
-                }
-            });
 
 
 

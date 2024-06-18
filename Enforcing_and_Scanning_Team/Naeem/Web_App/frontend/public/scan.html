@@ -175,7 +175,7 @@
                             scanid = response['insertId'];
                             createdAt = response['createdAt'];
                             // Handle the response as needed
-
+                            $('tr[data-ip="' + ip + '"] .lastScan').removeClass();
                             $('tr[data-ip="' + ip + '"]').addClass('scan-success');
                             // Remove the grey out and the scanning message when the last IP is processed
 
@@ -221,10 +221,13 @@
 
         // Handle the "Check Database" button click
         $('#checkDatabase').on('click', function () {
+
+            $('#result').addClass('grayed-out');
             // Get selected IP addresses
             var selectedIps = [];
-            $('.select-device').each(function () {
+            $('.select-device:checked').each(function () {
                 selectedIps.push($(this).val());
+                console.log(selectedIps);
             });
 
             // Iterate through selected IP addresses with a delay between each call
@@ -240,6 +243,10 @@
                             var scanID = response[0].scanid;
                             $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
                             $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                            if (index === selectedIps.length - 1) {
+                                $('#result').removeClass('grayed-out');
+                                
+                            }
                         },
                         error: function (error) {
                             console.log(error);
@@ -248,6 +255,10 @@
                                 var scanID = "Null";
                                 $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column
                                 $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
+                                $('tr[data-ip="' + ip + '"] .lastScan').addClass('scan-bad');
+                                if (index === selectedIps.length - 1) {
+                                $('#result').removeClass('grayed-out');
+                            }
                             }
                         }
                     });
