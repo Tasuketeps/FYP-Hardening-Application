@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload CIS Benchmark File</title>
+    <link href="css/login.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
@@ -16,12 +18,16 @@
             </div>
             <button type="submit" class="btn btn-primary">Upload</button>
         </form>
+        <div id="loading" class="spinner-container" style="display: none;">
+            <div class="loader"></div>
+        </div>
         <div id="uploadStatus" class="mt-3"></div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
         $('#uploadForm').on('submit', function(e) {
+            $('#loading').show();
             e.preventDefault();
             var formData = new FormData(this);
             let fileInput = document.getElementById('cisFile');
@@ -34,7 +40,9 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    $('#loading').hide();
                     $('#uploadStatus').html('<p class="text-success">File uploaded successfully!</p>');
+
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $('#uploadStatus').html('<p class="text-danger">File upload failed!</p>');
