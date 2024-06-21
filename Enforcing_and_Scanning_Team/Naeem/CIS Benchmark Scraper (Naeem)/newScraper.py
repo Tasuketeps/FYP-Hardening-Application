@@ -62,16 +62,19 @@ with open(csv_file, 'rb') as pdf_file:
     
     # Get the CIS Benchmark Title from Cover Page
     coverPageText = pdf_reader.pages[0].extract_text()
+    print(coverPageText)
     def get_text(input_text):
-        # Remove extra spaces, newlines, and hyphens
-        cleaned_text = re.sub(r"[\s-]+", " ", input_text.strip())
-        
-        # Extract the desired text using regex
-        match = re.search(r"(Microsoft\s+Windows\s+11\s+Enterprise)", cleaned_text)
-        if match:
-            return match.group(1)
-        else:
-            return None
+        pattern = "(?<=CIS).*(?=Benchmark)"
+        rerule = re.search(pattern, coverPageText, re.DOTALL)
+        if rerule is not None:
+            CISName = rerule.group(0).strip().replace('\n','')
+            if "Microsoft Windows 11 Enterprise" in CISName:
+                return CISName
+            if "Microsoft Windows Server 2019" in CISName:
+                return CISName
+            else:
+                raise ValueError("Could not find a matching regex for {}".format(CISName))
+
     
     cis_version = get_text(coverPageText)
     print('CIS Benchmark Detected: ' + cis_version)

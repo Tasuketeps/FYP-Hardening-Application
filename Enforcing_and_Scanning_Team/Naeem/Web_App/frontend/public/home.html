@@ -29,7 +29,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="home.html">Home</a></li>
                     <li><a href="scan.html">Network</a></li>
-                    <li><a href="draftBenchmark.html">Upload CIS Benchmark</a></li>
+                    <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
+                    <li><a href="register.html">Add users</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" id="Logout">Logout</a></li>
@@ -57,6 +58,31 @@
                 }
 
             });
+
+            $('#uploadForm').on('submit', function(e) {
+            $('#loading').show();
+            e.preventDefault();
+            var formData = new FormData(this);
+            let fileInput = document.getElementById('cisFile');
+            let file = fileInput.files[0];
+            formData.append('pdf_file', file);
+            $.ajax({
+                url: 'http://192.168.126.148:3000/uploadBenchmark', // Change this to your server endpoint
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#loading').hide();
+                    $('#uploadStatus').html('<p class="text-success">File uploaded successfully!</p>');
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#uploadStatus').html('<p class="text-danger">File upload failed!</p>');
+                }
+            });
+        });
+
 
         }); 
     </script>
