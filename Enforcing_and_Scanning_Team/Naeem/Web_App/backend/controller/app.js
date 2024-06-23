@@ -13,7 +13,7 @@ app.use(cors());
 
 const user = require("../models/user");
 const scan = require("../models/scan");
-
+const benchmark = require("../models/benchmark")
 // import body-parser middleware
 const bodyParser = require("body-parser");
 
@@ -123,6 +123,51 @@ return;
 	//res.send(`${stdout}`);
     });
 });
+
+app.post("/uploadBenchmark", (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+  
+    // Access the file
+    const pdfFile = req.files.pdf_file;
+    const uploadPath = path.join(__dirname, '../benchmarks/pdf', pdfFile.name);
+  
+    // Move the file to the uploads directory
+    pdfFile.mv(uploadPath, (err) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+              const pythonScript = path.join(__dirname, '../scripts/newScraper.py');
+              const command = `python3 ${pythonScript} benchmarks/pdf/${pdfFile.name}`;
+              filename = `${pdfFile.name}`;
+              exec(command, (error, stdout, stderr) => {
+                  if (error) {
+                      console.error(`Error executing script: ${error}`);
+                      res.status(500).send(`Error executing script: ${error}`);
+                      return;
+                  }
+                  if (stderr) {
+                      console.error(`Script stderr: ${stderr}`);
+                      res.status(500).send(`Script error: ${stderr}`);
+                      return;
+                  }
+                                  // Send the output of the Python script as the response
+                                  benchmark.insertBenchmark(filename,stdout, function (err, result) {
+                                    if (!err) {
+                                        res.status(201).json({ message: "Benchmark uploaded." });
+                                    } else if (err.code === "ER_DUP_ENTRY") {
+                                        res.status(422).json({ message: "Username or Email already exists!" });
+                                    } else {
+                                        res.status(500).json({ message: "Server error" });
+                                    }
+                                });
+                            
+                                            // res.status(200).send(stdout);
+                                        });
+                              });
+                            });
+
 
 
 
