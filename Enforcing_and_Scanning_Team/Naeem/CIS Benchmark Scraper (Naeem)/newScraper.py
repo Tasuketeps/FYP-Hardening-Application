@@ -110,9 +110,9 @@ with open(csv_file, 'rb') as pdf_file:
                 "ID",
                 "Category",
                 "Setting",
-                "RecommendedValue",
-                "Audit",
-                "Remediation"
+                "RecommendedValue"
+                # "Audit",
+                # "Remediation"
             ]
         )
 
@@ -123,6 +123,7 @@ with open(csv_file, 'rb') as pdf_file:
 
             # Look for a rule
             rule_count = 0
+            value_count = 0
             rerule = re.search(cis_pattern,data,re.DOTALL)
             if rerule is not None:
                 rule = rerule.group()
@@ -138,12 +139,13 @@ with open(csv_file, 'rb') as pdf_file:
                         value = 1
                     if value == "Disabled":
                         value = 0
+                    value_count+=1
                 else:
                     id_ = 'Not found'
                     setting = 'Not found'
                     value = 'Not found'
-
                 rule_count += 1
+                
                 # print(rule)
 
 
@@ -167,7 +169,7 @@ with open(csv_file, 'rb') as pdf_file:
                 rem = rem.replace('To establish the recommended configuration via GP, set the following UI path to', '')
                 rem = rem.strip('\n')
 
-            if (rule_count == 1):
+            if (rule_count == 1 and value_count == 1):
                 # print(rule)
                 if (aud_count == 0):
                     # print(audit)
@@ -176,7 +178,7 @@ with open(csv_file, 'rb') as pdf_file:
                 if (rem_count == 0):
                     rem = ('No rem')
                 
-                row = [id_,check_policy(id_),setting,value, audit, rem]
+                row = [id_,check_policy(id_),setting,value]
                 rule_writer.writerow(row)
                     
 
