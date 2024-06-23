@@ -1,5 +1,6 @@
 import csv
 import sys
+import codecs
 
 # Define the file paths
 inf_file_path = sys.argv[1]
@@ -25,13 +26,11 @@ for line in inf_contents:
         key, sep, value = line.partition('=')
         key = key.strip()
         if key in csv_data:
-            value = csv_data[key]
-        updated_inf_contents.append(f"{key} = {value}\n")
-    else:
-        updated_inf_contents.append(line.rstrip() + '\n')  # Ensure newline format
+            line = f"{key} = {csv_data[key]}\n"
+    updated_inf_contents.append(line)
 
 # Write the updated contents back to the .inf file
-with open(inf_file_path, 'w', encoding='utf-16') as inf_file:
+with codecs.open(inf_file_path, 'w', encoding='utf-16') as inf_file:
     inf_file.writelines(updated_inf_contents)
 
 print(f'Values in "{inf_file_path}" have been updated based on the CSV data.')
