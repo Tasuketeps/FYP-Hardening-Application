@@ -16,23 +16,22 @@ with open(csv_file_path, mode='r', newline='') as csv_file:
 
 # Read the .inf file and store its contents
 with open(inf_file_path, 'r', encoding='utf-16') as inf_file:
-    inf_contents = inf_file.read()
+    inf_contents = inf_file.readlines()
 
 # Update the .inf file contents based on the CSV data
 updated_inf_contents = []
-for line in inf_contents.splitlines():
-    stripped_line = line.strip()
-    if '=' in stripped_line and not stripped_line.startswith('['):
+for line in inf_contents:
+    if '=' in line and not line.strip().startswith('['):
         key, sep, value = line.partition('=')
         key = key.strip()
         if key in csv_data:
             value = csv_data[key]
-        updated_inf_contents.append(f"{key}={value}")
+        updated_inf_contents.append(f"{key} = {value}\n")
     else:
-        updated_inf_contents.append(line)
+        updated_inf_contents.append(line.rstrip() + '\n')  # Ensure newline format
 
 # Write the updated contents back to the .inf file
 with open(inf_file_path, 'w', encoding='utf-16') as inf_file:
-    inf_file.write("\n".join(updated_inf_contents))
+    inf_file.writelines(updated_inf_contents)
 
 print(f'Values in "{inf_file_path}" have been updated based on the CSV data.')

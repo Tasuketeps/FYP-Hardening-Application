@@ -39,37 +39,109 @@
             </div>
         </div>
     </nav>
-    <div class="row justify-content-center">
-        <h1>Baseline Configuration</h1>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <select id="benchmark-select" class="form-select">
+                <option selected>Select a benchmark</option>
+                <!-- Options will be populated here by JavaScript -->
+            </select>
+        </div>
+        <div class="col-md-6">
+            <button id="load-benchmark" class="btn btn-primary">Load Benchmark</button>
+            <button id="create-baseline" class="btn btn-secondary">Create Baseline</button>
+        </div>
     </div>
-    <select class="form-select" aria-label="Default select example">
-        <option selected>Open this select menu</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
-    
+    <div class="row">
+        <div class="col-md-12">
+            <table id="benchmark-table" class="table table-bordered policy-table">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Setting</th>
+                        <th>Recommended Value</th>
+                        <th>New Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table rows will be populated here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
     <script>
-        $(document).ready(function () {  // $(function () {})
-            const token = localStorage.getItem("token");
+        $(document).ready(function () {
+            var settings = {
+                "url": "http://192.168.126.148:3000/allBenchmarks",
+                "method": "GET",
+                "timeout": 0,
+            };
 
-            $("#Logout").click(function () {
-                const confirmLogout = confirm("Are you sure you want to log out?");
-                if (confirmLogout) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userInfo');
-                    window.location.assign("http://localhost:3001");
-                } else {
-                    event.preventDefault();
+            $.ajax(settings).done(function (response) {
+                response.forEach(function (item) {
+                    $('#benchmark-select').append('<option value="' + item.csv_filename + '">' + item.csv_filename + '</option>');
+                });
+            });
+
+            $('#load-benchmark').click(function () {
+                var selectedBenchmark = $('#benchmark-select').val();
+                if (selectedBenchmark !== "Select a benchmark") {
+                    $.get('http://192.168.126.148:3000/benchmark', { filename: selectedBenchmark }, function (data) {
+                        // Clear previous table data
+                        $('#benchmark-table tbody').empty();
+
+                        // Split data into rows
+                        var rows = data.split('\n');
+
+                        // Loop through rows and create table rows
+                        rows.forEach(function (row) {
+                            var columns = row.split(',');
+                            if (columns.length === 4) {
+                                var newRow = '<tr data-policyName="' + columns[2] + '">' +
+                                    '<td><input type="checkbox" class="form-check-input select-policy" value="' + columns[2] + '"></td>' +
+                                    '<td>' + columns[0] + '</td>' +
+                                    '<td>' + columns[1] + '</td>' +
+                                    '<td class="policy-name">' + columns[2] + '</td>' +
+                                    '<td>' + columns[3] + '</td>' +
+                                    '<td><input type="text" class="form-control new-value-input" placeholder="Enter new value"></td>' +
+                                    '</tr>';
+                                $('#benchmark-table tbody').append(newRow);
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Click event handler for the Create Baseline button
+            $('#create-baseline').click(function () {
+                // Object to store selected policies and new values
+                var selectedPolicies = {};
+
+                $('.select-policy:checked').each(function () {
+                    var policyName = $(this).closest('tr').find('.policy-name').text();
+                    var newValue = $(this).closest('tr').find('.new-value-input').val().trim();
+
+                    // Check if newValue is not blank
+                    if (newValue !== '') {
+                        selectedPolicies[policyName] = newValue;
+                    }
+                });
+
+                // Check if any policies are selected
+                if (Object.keys(selectedPolicies).length === 0) {
+                    alert('No policies selected.');
                     return;
                 }
 
+                console.log(selectedPolicies);
             });
 
-            
 
-        }); 
+
+        });
     </script>
 </body>
 
