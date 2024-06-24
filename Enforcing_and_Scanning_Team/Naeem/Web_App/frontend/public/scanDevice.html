@@ -10,70 +10,198 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
 </head>
 
 <body>
     <nav class="navbar navbar-default">
-        <!-- Navbar content -->
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="scan.html">Scan Network</a></li>
+                    <li><a href="scanDevice.html">Scan Device</a></li>
+                    <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
+                    <li><a href="register.html">Add users</a></li>
+                    <li><a href="baseline.html">Configure Baseline</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="Logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
     <div class="container">
-        <h1>Select an IP Address:</h1>
+        <h1>Scan Device</h1>
         <select id="ipSelect" class="form-select">
-            <!-- Options will be dynamically added here -->
+            <option selected>Select IP</option>
+        </select>
+        <div id="infoDisplay">
+        </div>
+        <select id="baselineSelect" class="form-select">
+            <option selected>Select Baseline</option>
         </select>
         <button id="scanButton" class="btn btn-primary">Scan Selected IP</button>
+        <div id="policyResults" class="table-responsive"></div>
+
     </div>
 
     <script>
         $(document).ready(function () {
             // Retrieve scan data from sessionStorage
             var scanData = sessionStorage.getItem('scanData');
+            scanData = JSON.parse(scanData)
             var ipSelect = $('#ipSelect');
+            var devices = [];
 
-            if (scanData) {
-                // Parse scan data into an array of objects
-                var devices = [];
-                var lines = scanData.split('\r\n');
+            // Parse scan data into an array of objects
+            var lines = scanData.split('\r\n');
 
-                lines.forEach(function (line) {
-                    var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
-                    if (match) {
-                        devices.push({
-                            ip: match[1],
-                            mac: match[2],
-                            manufacturer: match[3]
-                        });
-                    }
-                });
+            lines.forEach(function (line) {
+                var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
+                if (match) {
+                    devices.push({
+                        ip: match[1],
+                        mac: match[2],
+                        manufacturer: match[3]
+                    });
+                }
+            });
 
-                // Populate the select dropdown with IP addresses
-                devices.forEach(function (device) {
-                    ipSelect.append($('<option>', {
-                        value: device.ip,
-                        text: device.ip
-                    }));
-                });
-            } else {
-                // Handle case where no scan data is found
+            // Populate the select dropdown with IP addresses
+            devices.forEach(function (device) {
+                ipSelect.append($('<option>', {
+                    value: device.ip,
+                    text: device.ip
+                }));
+            });
+
+            if (devices.length === 0) {
                 ipSelect.append($('<option>', {
                     value: '',
-                    text: 'No data available'
+                    text: 'No IP addresses available'
                 }));
                 $('#scanButton').prop('disabled', true);
             }
 
-            // Handle scan button click
-            $('#scanButton').on('click', function () {
-                var selectedIp = ipSelect.val();
-                if (selectedIp) {
-                    // Perform scan for the selected IP
-                    alert('Scan initiated for IP: ' + selectedIp);
-                    // Add your scan logic here
+            $('#ipSelect').on('change', function () {
+
+                var selectedIp = $(this).val();
+                var settings = {
+                    "url": "http://192.168.126.148:3000/checkPolicy?ipaddr=" + selectedIp,
+                    "method": "GET",
+                    "timeout": 0,
+                };
+
+                $.ajax(settings).done(function (response) {
+                    // console.log(response[0].scanned_filename);
+                    sessionStorage.setItem('devicePolicyFileName', JSON.stringify(response[0].scanned_filename));
+                });
+                var selectedDevice = devices.find(device => device.ip === selectedIp);
+
+                if (selectedDevice) {
+                    $('#infoDisplay').html('MAC Address: ' + selectedDevice.mac + '<br>Manufacturer: ' + selectedDevice.manufacturer);
+
                 } else {
-                    alert('Please select an IP address.');
+                    $('#infoDisplay').html('');
                 }
             });
+
+
+
+            var settings = {
+                "url": "http://192.168.126.148:3000/allBaseline",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                if (Array.isArray(response) && response.length > 0) {
+                    response.forEach(function (baseline) {
+                        baselineSelect.append($('<option>', {
+                            value: baseline.baselineid,
+                            text: baseline.filename
+                        }));
+                    });
+                } else {
+                    baselineSelect.append($('<option>', {
+                        value: '',
+                        text: 'No baselines available'
+                    }));
+                }
+            });
+            var baselineSelect = $('#baselineSelect');
+            // Handle scan button click
+            $('#scanButton').on('click', function () {
+                var baseline = $('#baselineSelect option:selected').text(); // Get the text of the selected option
+                if (baseline === 'Select Baseline') {
+                    // Handle case where "Select Baseline" is still selected
+                    alert('Please select a baseline.');
+                    return; // Stop execution if no baseline is selected
+                }
+                var devicePolicy = sessionStorage.getItem('devicePolicyFileName');
+                devicePolicy = JSON.parse(devicePolicy)
+                var settings = {
+                    "url": "http://192.168.126.148:3000/baseline?filename=" + baseline + "&policyFileName=" + devicePolicy + ".csv",
+                    "method": "GET",
+                    "timeout": 0,
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    var policyResults = $('#policyResults');
+
+                    // Use PapaParse to parse the CSV response
+                    var parsedData = Papa.parse(response, {
+                        header: false,
+                        skipEmptyLines: true,
+                        quoteChar: "'",
+                    }).data;
+
+                    var formattedHTML = '<table class="table table-bordered policy-table">';
+                    formattedHTML += '<thead><tr><th>No.</th><th>Policy Name</th><th>Current Value</th><th>Recommended Value</th><th>Constant Name</th></tr></thead>';
+                    formattedHTML += '<tbody>';
+                    counter = 0
+                    parsedData.forEach(function (row) {
+                        counter += 1
+                        if (row[2] === 'Enabled' || row[2] === 'Disabled') {
+                            if (row[1] == 0) {
+                                row[1] = 'Disabled';
+                            }
+                            if (row[1] == 1) {
+                                row[1] = 'Enabled';
+                            }
+                        }
+                        if (row.length >= 4) {
+                            formattedHTML += '<tr><td>' + counter + '</td><th scope="row">' + row[0].trim() + '</th><td>' + row[1].trim().replace(/'/g, '') + '</td><td>' + row[2].trim() + '</td><td>' + row[3].trim() + '</td></tr>';
+                        }
+                    });
+                    formattedHTML += '</tbody></table>';
+                    policyResults.html(formattedHTML);
+                });
+
+
+
+
+
+            });
+
+
+
+
         });
     </script>
 </body>

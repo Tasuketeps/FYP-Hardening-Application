@@ -47,8 +47,8 @@
         </div>
         <button id="selectAllBtn" style="display: none;">All</button><button id="deselectAllBtn"
             style="display: none">Clear</button>
-        <button id="checkDatabase" class="btn btn-primary" style="display: none;">Check Database</button>
-        <button id="scanButton" class="btn btn-primary" style="display:none">Scan Selected</button>
+        <button id="checkDatabase" class="btn btn-primary" style="display: none;">Refresh</button>
+        <button id="scanButton" class="btn btn-primary" style="display:none">Synchronise Selected Devices</button>
 
         <div id="result" class="table-overlay" style="display: none;"></div>
     </div>
@@ -127,7 +127,7 @@
                 // Generating HTML content
                 if (devices.length > 0) {
                     var table = $('<table></table>').addClass('table table-bordered custom-table');
-                    table.append('<tr><th>Select</th><th>IP Address</th><th>MAC Address</th><th>Manufacturer</th><th>Scan ID</th><th>Last Scan at</th></tr>');
+                    table.append('<tr><th>Select</th><th>IP Address</th><th>MAC Address</th><th>Manufacturer</th><th>Scan ID</th><th>Last Sync at</th></tr>');
                     devices.forEach(function (device) {
                         var row = $('<tr></tr>').attr('data-ip', device.ip);
                         row.append('<td><input type="checkbox" class="select-device" value="' + device.ip + '"></td>');
@@ -253,6 +253,13 @@
                 selectedIps.push($(this).val());
                 console.log(selectedIps);
             });
+
+            // Check if any IP addresses are selected
+            if (selectedIps.length === 0) {
+                alert('No devices selected.');
+                $('#result').removeClass('grayed-out');
+                return;
+            }
 
             // Iterate through selected IP addresses with a delay between each call
             selectedIps.forEach(function (ip, index) {
