@@ -116,9 +116,13 @@ sid = {
     "*S-1-5-19": "LOCAL SERVICE",
     "*S-1-5-20": "NETWORK SERVICE",
     "*S-1-5-32-544": "Administrators",
+    "*S-1-5-32-555": "Remote Desktop Users",
     "*S-1-5-32-545": "Users",
     "*S-1-5-32-551": "Backup Operators",
     "*S-1-5-6": "Service",
+    "*S-1-5-32-559": "Performance Log Users",
+    "*S-1-5-80-0": "All Services",
+    "*S-1-5-90-0": "Windows Manager\Windows Manager Group",
     "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
 }
 

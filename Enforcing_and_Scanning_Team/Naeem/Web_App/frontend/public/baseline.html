@@ -147,7 +147,7 @@
                 }
 
                 // Convert dictionary to CSV
-                let csvContent = "Policy Name,Recommended Value\n";
+                let csvContent = "Setting,RecommendedValue\n";
                 for (const [key, value] of Object.entries(selectedPolicies)) {
                     csvContent += `${key},"${value.replace(/"/g, '""')}"\n`;
                 }
