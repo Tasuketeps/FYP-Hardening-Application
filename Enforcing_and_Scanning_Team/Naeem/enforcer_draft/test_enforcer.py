@@ -8,15 +8,23 @@ csv_file_path = sys.argv[2]
 
 # SID mapping dictionary
 sid = {
-    "Everyone": "*S-1-1-0",
-    "LOCAL SERVICE": "*S-1-5-19",
-    "NETWORK SERVICE": "*S-1-5-20",
-    "Administrators": "*S-1-5-32-544",
-    "Remote Desktop Users": "*S-1-5-32-555",
-    "Users": "*S-1-5-32-545",
-    "Backup Operators": "*S-1-5-32-551",
-    "Service": "*S-1-5-6",
-    "NT SERVICE\\WdiServiceHost": "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420"
+    "*S-1-1-0": "Everyone",
+    "*S-1-5-19": "LOCAL SERVICE",
+    "*S-1-5-20": "NETWORK SERVICE",
+    "*S-1-5-80-0": r"NT SERVICE\ ALL SERVICES",
+    "*S-1-5-32-544": "Administrators",
+    "*S-1-5-32-555": "Remote Desktop Users",
+    "*S-1-5-32-545": "Users",
+    "*S-1-5-32-551": "Backup Operators",
+    "*S-1-5-6": "Service",
+    "*S-1-5-9": "ENTERPRISE DOMAIN CONTROLLERS",
+    "*S-1-5-11": "Authenticated Users",
+    "*S-1-5-32-548": "Account Operators",
+    "*S-1-5-32-549": "Server Operators",
+    "*S-1-5-32-550": "Printer Operators",
+    "*S-1-5-90-0": r"Windows Manager\Windows Manager Group",
+    "*S-1-5-32-559": "Performance Log Users",
+    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
 }
 
 # Read the CSV file and store the data in a dictionary

@@ -49,6 +49,7 @@
         </div>
         <div class="col-md-6">
             <button id="load-benchmark" class="btn btn-primary">Load Benchmark</button>
+            <input type="text" id="baseline-name" class="form-control" placeholder="Enter Baseline Name" style="display: inline-block; width: auto">
             <button id="create-baseline" class="btn btn-secondary">Create Baseline</button>
         </div>
     </div>
@@ -127,12 +128,13 @@
             $('#create-baseline').click(function () {
                 // Object to store selected policies and new values
                 var selectedPolicies = {};
+                var baselineName = $('#baseline-name').val();
 
                 $('.select-policy:checked').each(function () {
                     var policyName = $(this).closest('tr').find('.policy-name').text();
                     var recValue = $(this).closest('tr').find('.rec-value').text();
 
-                    // Check if newValue is not blank
+                    // Check if recValue is not blank
                     if (recValue !== '') {
                         selectedPolicies[policyName] = recValue;
                     }
@@ -144,8 +146,30 @@
                     return;
                 }
 
-                console.log(selectedPolicies);
+                // Convert dictionary to CSV
+                let csvContent = "Policy Name,Recommended Value\n";
+                for (const [key, value] of Object.entries(selectedPolicies)) {
+                    csvContent += `${key},"${value.replace(/"/g, '""')}"\n`;
+                }
+
+                var settings = {
+                    url: "http://192.168.126.148:3000/baseline",
+                    method: "POST",
+                    timeout: 0,
+                    contentType: "text/csv",
+                    data: csvContent,
+                    headers: {
+                        'Baseline-Name': baselineName
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                });
+
             });
+
+
 
 
 
