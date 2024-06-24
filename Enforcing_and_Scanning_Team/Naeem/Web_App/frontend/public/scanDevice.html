@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <!-- Navbar content -->
+    </nav>
+
+    <div class="container">
+        <h1>Select an IP Address:</h1>
+        <select id="ipSelect" class="form-select">
+            <!-- Options will be dynamically added here -->
+        </select>
+        <button id="scanButton" class="btn btn-primary">Scan Selected IP</button>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Retrieve scan data from sessionStorage
+            var scanData = sessionStorage.getItem('scanData');
+            var ipSelect = $('#ipSelect');
+
+            if (scanData) {
+                // Parse scan data into an array of objects
+                var devices = [];
+                var lines = scanData.split('\r\n');
+
+                lines.forEach(function (line) {
+                    var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
+                    if (match) {
+                        devices.push({
+                            ip: match[1],
+                            mac: match[2],
+                            manufacturer: match[3]
+                        });
+                    }
+                });
+
+                // Populate the select dropdown with IP addresses
+                devices.forEach(function (device) {
+                    ipSelect.append($('<option>', {
+                        value: device.ip,
+                        text: device.ip
+                    }));
+                });
+            } else {
+                // Handle case where no scan data is found
+                ipSelect.append($('<option>', {
+                    value: '',
+                    text: 'No data available'
+                }));
+                $('#scanButton').prop('disabled', true);
+            }
+
+            // Handle scan button click
+            $('#scanButton').on('click', function () {
+                var selectedIp = ipSelect.val();
+                if (selectedIp) {
+                    // Perform scan for the selected IP
+                    alert('Scan initiated for IP: ' + selectedIp);
+                    // Add your scan logic here
+                } else {
+                    alert('Please select an IP address.');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

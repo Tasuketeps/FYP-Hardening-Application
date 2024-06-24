@@ -1,0 +1,52 @@
+Policy name,Value,Recommended Value,ConstantName
+Minimum password age,0,1 or more day(s),MinimumPasswordAge
+Maximum password age,42,"365 or fewer days, but not 0",MaximumPasswordAge
+Minimum password length,0,14 or more character(s),MinimumPasswordLength
+Account lockout threshold,0,"5 or fewer invalid logon attempt(s), but not 0",LockoutBadCount
+Interactive logon: Prompt user to change password before expiration,"4,5",between 5 and 14 days,MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\PasswordExpiryWarning
+Interactive logon: Smart card removal behavior,"1,""0""",Lock Workstation,MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\ScRemoveOption
+Audit: Shut down system immediately if unable to log security audits,"4,0",0,MACHINE\System\CurrentControlSet\Control\Lsa\CrashOnAuditFail
+Network access: Do not allow storage of passwords and credentials for network authentication,"4,0",1,MACHINE\System\CurrentControlSet\Control\Lsa\DisableDomainCreds
+Network access: Let Everyone permissions apply to anonymous users,"4,0",0,MACHINE\System\CurrentControlSet\Control\Lsa\EveryoneIncludesAnonymous
+Network access: Sharing and security model for local accounts,"4,0",Classic - local users authenticate as themselves,MACHINE\System\CurrentControlSet\Control\Lsa\ForceGuest
+Accounts: Limit local account use of blank passwords to console logon only,"4,1",1,MACHINE\System\CurrentControlSet\Control\Lsa\LimitBlankPasswordUse
+Network security: Minimum session security for NTLM SSP based (including secure RPC) clients,"4,536870912","Require NTLMv2 session security, Require 128 -bit encryption",MACHINE\System\CurrentControlSet\Control\Lsa\MSV1_0\NTLMMinClientSec
+Network security: Minimum session security for NTLM SSP based (including secure RPC) servers,"4,536870912","Require NTLMv2 session security, Require 128 -bit encryption",MACHINE\System\CurrentControlSet\Control\Lsa\MSV1_0\NTLMMinServerSec
+Network security: Do not store LAN Manager hash value on next password change,"4,1",1,MACHINE\System\CurrentControlSet\Control\Lsa\NoLMHash
+Network access: Do not allow anonymous enumeration of SAM accounts and shares,"4,0",1,MACHINE\System\CurrentControlSet\Control\Lsa\RestrictAnonymous
+Network access: Do not allow anonymous enumeration of SAM accounts,"4,1",1,MACHINE\System\CurrentControlSet\Control\Lsa\RestrictAnonymousSAM
+Microsoft network server: Disconnect clients when logon hours expire,"4,1",1,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\EnableForcedLogOff
+Microsoft network server: Digitally sign communications (if client agrees),"4,0",1,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\EnableSecuritySignature
+Network access: Named Pipes that can be accessed anonymously,"7,",None,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\NullSessionPipes
+Microsoft network server: Digitally sign communications (always),"4,0",1,MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters\RequireSecuritySignature
+Microsoft network client: Digitally sign communications (always),"4,0",1,MACHINE\System\CurrentControlSet\Services\LanmanWorkstation\Parameters\RequireSecuritySignature
+Network security: LDAP client signing requirements,"4,1",Negotiate signing,MACHINE\System\CurrentControlSet\Services\LDAP\LDAPClientIntegrity
+Domain member: Disable machine account password changes,"4,0",0,MACHINE\System\CurrentControlSet\Services\Netlogon\Parameters\DisablePasswordChange
+Domain member: Maximum machine account password age,"4,30","30 or fewer days, but not 0",MACHINE\System\CurrentControlSet\Services\Netlogon\Parameters\MaximumPasswordAge
+Domain member: Digitally encrypt or sign secure channel data (always),"4,1",1,MACHINE\System\CurrentControlSet\Services\Netlogon\Parameters\RequireSignOrSeal
+Domain member: Require strong (Windows 2000 or later) session key,"4,1",1,MACHINE\System\CurrentControlSet\Services\Netlogon\Parameters\RequireStrongKey
+Domain member: Digitally encrypt secure channel data (when possible),"4,1",1,MACHINE\System\CurrentControlSet\Services\Netlogon\Parameters\SealSecureChannel
+Access this computer from the network,"Everyone,Administrators,Users,Backup Operators","Administrators, Remote Desktop Users",SeNetworkLogonRight
+Back up files and directories,"Administrators,Backup Operators",Administrators,SeBackupPrivilege
+Change the system time,"LOCAL SERVICE,Administrators","Administrators, LOCAL SERVICE",SeSystemtimePrivilege
+Create a pagefile,Administrators,Administrators,SeCreatePagefilePrivilege
+Debug programs,Administrators,Administrators,SeDebugPrivilege
+Force shutdown from a remote system,Administrators,Administrators,SeRemoteShutdownPrivilege
+Generate security audits,"LOCAL SERVICE,NETWORK SERVICE","LOCAL SERVICE, NETWORK SERVICE",SeAuditPrivilege
+Adjust memory quotas for a process,"LOCAL SERVICE,NETWORK SERVICE,Administrators","Administrators, LOCAL SERVICE, NETWORK SERVICE",SeIncreaseQuotaPrivilege
+Increase scheduling priority,"Administrators,*S-1-5-90-0","Administrators, Window Manager \Window Manager Group",SeIncreaseBasePriorityPrivilege
+Load and unload device drivers,Administrators,Administrators,SeLoadDriverPrivilege
+Allow log on locally,"__vmware__,Guest,Administrators,Users,Backup Operators","Administrators, Users",SeInteractiveLogonRight
+Manage auditing and security log,Administrators,Administrators,SeSecurityPrivilege
+Modify firmware environment values,Administrators,Administrators,SeSystemEnvironmentPrivilege
+Profile single process,Administrators,Administrators,SeProfileSingleProcessPrivilege
+Profile system performance,"Administrators,NT SERVICE\WdiServiceHost","Administrators, NT SERVICE \WdiServiceHost",SeSystemProfilePrivilege
+Replace a process level token,"LOCAL SERVICE,NETWORK SERVICE","LOCAL SERVICE, NETWORK SERVICE",SeAssignPrimaryTokenPrivilege
+Restore files and directories,"Administrators,Backup Operators",Administrators,SeRestorePrivilege
+Shut down the system,"Administrators,Users,Backup Operators","Administrators, Users",SeShutdownPrivilege
+Take ownership of files or other objects,Administrators,Administrators,SeTakeOwnershipPrivilege
+Perform volume maintenance tasks,Administrators,Administrators,SeManageVolumePrivilege
+Allow log on through Remote Desktop Services,"Administrators,*S-1-5-32-555","Administrators, Remote Desktop Users",SeRemoteInteractiveLogonRight
+Impersonate a client after authentication,"LOCAL SERVICE,NETWORK SERVICE,Administrators,Service","Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",SeImpersonatePrivilege
+Create global objects,"LOCAL SERVICE,NETWORK SERVICE,Administrators,Service","Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",SeCreateGlobalPrivilege
+Change the time zone,"LOCAL SERVICE,Administrators,Users","Administrators, LOCAL SERVICE, Users",SeTimeZonePrivilege

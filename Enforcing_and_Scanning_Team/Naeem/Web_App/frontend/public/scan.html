@@ -29,6 +29,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="home.html">Home</a></li>
                     <li><a href="scan.html">Scan Network</a></li>
+                    <li><a href="scanDevice.html">Scan Device</a></li>
                     <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
                     <li><a href="register.html">Add users</a></li>
                     <li><a href="baseline.html">Configure Baseline</a></li>
@@ -55,22 +56,45 @@
 
     <script>
         $(document).ready(function () {
-            var settings = {
-                "url": "http://192.168.126.148:3000/scan",
-                "method": "GET",
-                "timeout": 0,
-            };
+            var scanData = sessionStorage.getItem('scanData');
 
-            // Show the loading spinner
-            $('#loading').show();
-            $('#result').hide();
+            if (scanData) {
+                // Load scan data from sessionStorage
+                displayScanResults(JSON.parse(scanData));
+            } else {
+                // Perform the scan and store the data in sessionStorage
+                performScan();
+            }
 
-            $.ajax(settings).done(function (response) {
-                console.log("Full response:", response);
+            function performScan() {
+                var settings = {
+                    "url": "http://192.168.126.148:3000/scan",
+                    "method": "GET",
+                    "timeout": 0,
+                };
+                // Show the loading spinner
+                $('#loading').show();
+                $('#result').hide();
 
+                $.ajax(settings).done(function (response) {
+                    console.log("Full response:", response);
+                    // Your scan logic here
+                    // After getting the scan results, store them in sessionStorage
+                    sessionStorage.setItem('scanData', JSON.stringify(response));
+                    displayScanResults(response)
+                }).fail(function () {
+                    // Hide the loading spinner and show an error message if the request fails
+                    $('#loading').hide();
+                    $('#result').html('<p>Error loading data. Please try again later.</p>').show();
+                });
+            }
+
+            function displayScanResults(scanResults) {
+                // Display the scan results from the provided scanResults object
+                // This function will be called when scan data is loaded from sessionStorage
                 // Extracting the relevant information from the response
                 var resultDiv = $('#result');
-                var lines = response.split('\n');
+                var lines = scanResults.split('\n');
                 var devices = [];
 
                 lines.forEach(function (line) {
@@ -132,11 +156,9 @@
                 // Hide the loading spinner and show the result
                 $('#loading').hide();
                 $('#result').show();
-            }).fail(function () {
-                // Hide the loading spinner and show an error message if the request fails
-                $('#loading').hide();
-                $('#result').html('<p>Error loading data. Please try again later.</p>').show();
-            });
+            }
+
+
 
 
             $(document).on("click", ".ipaddr", function () {
@@ -247,7 +269,7 @@
                             $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
                             if (index === selectedIps.length - 1) {
                                 $('#result').removeClass('grayed-out');
-                                
+
                             }
                         },
                         error: function (error) {
@@ -259,8 +281,8 @@
                                 $('tr[data-ip="' + ip + '"] .scanID').text(scanID);
                                 $('tr[data-ip="' + ip + '"] .lastScan').addClass('scan-bad');
                                 if (index === selectedIps.length - 1) {
-                                $('#result').removeClass('grayed-out');
-                            }
+                                    $('#result').removeClass('grayed-out');
+                                }
                             }
                         }
                     });
