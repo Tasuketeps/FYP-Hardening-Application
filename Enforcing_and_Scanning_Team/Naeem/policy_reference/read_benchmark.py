@@ -1,7 +1,7 @@
 import csv
 import sys 
 
-csv_file = sys.argv[1]
+csv_name = sys.argv[1]
 
 # List of encodings to try
 encodings = ['utf-8', 'latin1', 'utf-16']
@@ -12,7 +12,7 @@ data_list = []
 # Try opening the CSV file with different encodingscls
 for encoding in encodings:
     try:
-        with open(csv_file, mode='r', newline='', encoding=encoding) as csv_file:
+        with open(csv_name, mode='r', newline='', encoding=encoding) as csv_file:
             csv_reader = csv.reader(csv_file)
             headers = next(csv_reader)  # Read the headers
 

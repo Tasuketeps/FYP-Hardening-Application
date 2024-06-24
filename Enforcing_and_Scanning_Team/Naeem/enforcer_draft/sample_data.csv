@@ -1,3 +1,1 @@
-Policy Name,NewValue
-MinimumPasswordAge,10
-MinimumPasswordLength,10
+SeNetworkLogonRight,"Administrators, Remote Desktop Users"
