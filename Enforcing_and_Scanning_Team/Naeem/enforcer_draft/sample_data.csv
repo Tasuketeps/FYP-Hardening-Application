@@ -1,1 +1,7 @@
 SeNetworkLogonRight,"Administrators, Remote Desktop Users"
+SeMachineAccountPrivilege,"Administrators"
+SeIncreaseQuotaPrivilege,"Administrators, LOCAL SERVICE, NETWORK SERVICE"
+SeInteractiveLogonRight,"Administrators"
+SeRemoteInteractiveLogonRight,"Administrators"
+SeBackupPrivilege,"Administrators"
+SeSystemtimePrivilege,"Administrators, LOCAL SERVICE"

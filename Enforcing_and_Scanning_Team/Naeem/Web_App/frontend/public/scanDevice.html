@@ -55,6 +55,8 @@
         </select>
         <button id="scanButton" class="btn btn-primary">Scan Selected IP</button>
         <div id="policyResults" class="table-responsive"></div>
+        <button id="generateCSV" class="btn btn-primary">Configure</button>
+
 
     </div>
 
@@ -192,13 +194,23 @@
                     formattedHTML += '</tbody></table>';
                     policyResults.html(formattedHTML);
                 });
-
-
-
-
-
             });
+            $('#generateCSV').on('click', function () {
+                var data = [];
+                // Select all table rows
+                $('#policyResults table tbody tr').each(function () {
+                    var constantName = $(this).find('td').eq(3).text();
+                    var recommendedValue = $(this).find('td').eq(2).text();
+                    data.push([constantName, recommendedValue]);
+                });
+                csvContent = "Constant Name, Recommended Value\r\n"
+                data.forEach(function (rowArray) {
+                    var row = rowArray[0] + ',"' + rowArray[1] + '"';
+                    csvContent += row + "\r\n";
+                });
 
+                console.log(csvContent);
+            });
 
 
 
