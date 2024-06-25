@@ -1,0 +1,4 @@
+Setting,RecommendedValue
+Enforce password history,"24 or more password(s)"
+Maximum password age,"365 or fewer days, but not 0"
+Minimum password age,"1 or more day(s)"

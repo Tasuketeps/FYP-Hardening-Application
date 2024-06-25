@@ -1,0 +1,7 @@
+Setting,RecommendedValue
+Add workstations to domain,"Administrators"
+Adjust memory quotas for a process,"Administrators, LOCAL SERVICE, NETWORK SERVICE"
+Allow log on locally,"Administrators"
+Allow log on through Remote Desktop Services,"Administrators"
+Back up files and directories,"Administrators"
+Change the system time,"Administrators, LOCAL SERVICE"
