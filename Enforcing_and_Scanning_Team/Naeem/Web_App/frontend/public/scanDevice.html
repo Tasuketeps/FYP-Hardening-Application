@@ -208,8 +208,19 @@
                     var row = rowArray[0] + ',"' + rowArray[1] + '"';
                     csvContent += row + "\r\n";
                 });
+                var settings = {
+                    url: "http://192.168.126.148:3000/updatedPolicy",
+                    method: "POST",
+                    timeout: 0,
+                    contentType: "text/csv",
+                    data: csvContent,
+                };
 
-                console.log(csvContent);
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                });
+
+                // console.log(csvContent);
             });
 
 
