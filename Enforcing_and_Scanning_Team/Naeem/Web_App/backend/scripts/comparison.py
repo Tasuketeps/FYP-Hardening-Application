@@ -72,54 +72,25 @@ for encoding in encodings:
 counter = 0
 unique_entries = set()  # To keep track of unique entries
 
-
-sid = {
-        "*S-1-1-0": "Everyone",
-        "*S-1-5-19": "LOCAL SERVICE",
-        "*S-1-5-20": "NETWORK SERVICE",
-        "*S-1-5-32-544": "Administrators",
-        "*S-1-5-32-545": "Users",
-        "*S-1-5-32-551": "Backup Operators",
-        "*S-1-5-6": "Service",
-        "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
-    }
-
-# for key, value in data_dict.items():
-#     # Split the value by comma to handle multiple SIDs
-#     values = value.split(',')
-    
-#     # Replace SIDs with corresponding names
-#     converted_values = [sid.get(v, v) for v in values]
-    
-#     # Join the converted values back into a single string
-#     converted_value = ','.join(converted_values)
-    
-#     for ref_key, ref_value in reference_dict.items():
-#         if key == ref_value:
-#             for row_dict in data_list:
-#                 if row_dict["Setting"] == ref_key:
-#                     entry = (ref_key, converted_value, row_dict["RecommendedValue"])
-#                     if entry not in unique_entries:  # Check if entry is unique
-#                         unique_entries.add(entry)  # Add to set of unique entries
-#                         counter += 1
-#                         print("Row Data:")
-#                         rec_value = row_dict["RecommendedValue"]
-#                         print("-" * 40)
-#                         print(f"Policy name: {ref_key}")
-#                         print(f"Value: {converted_value}")
-#                         print(f"Recommended Value: {rec_value}")
-#                         print(f"ConstantName: {key}")
-#                         print("-" * 40 + str(counter))
-
 sid = {
     "*S-1-1-0": "Everyone",
     "*S-1-5-19": "LOCAL SERVICE",
     "*S-1-5-20": "NETWORK SERVICE",
+    "*S-1-5-80-0": r"NT SERVICE\ ALL SERVICES",
     "*S-1-5-32-544": "Administrators",
+    "*S-1-5-32-555": "Remote Desktop Users",
     "*S-1-5-32-545": "Users",
     "*S-1-5-32-551": "Backup Operators",
     "*S-1-5-6": "Service",
-    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
+    "*S-1-5-9": "ENTERPRISE DOMAIN CONTROLLERS",
+    "*S-1-5-11": "Authenticated Users",
+    "*S-1-5-32-548": "Account Operators",
+    "*S-1-5-32-549": "Server Operators",
+    "*S-1-5-32-550": "Printer Operators",
+    "*S-1-5-90-0": "Windows Manager\\Windows Manager Group",
+    "*S-1-5-32-559": "Performance Log Users",
+    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost",
+    "*S-1-5-83-0": "NT VIRTUAL MACHINE\\Virtual Machines"
 }
 
 counter = 0
@@ -146,16 +117,16 @@ for ref_key, ref_value in reference_dict.items():
                     entry = (ref_key, converted_value, row_dict["RecommendedValue"])
                     if entry not in unique_entries:  # Check if entry is unique
                         unique_entries.add(entry)  # Add to set of unique entries
-                        counter += 1
-                        print("Row Data:")
+                        #counter += 1
+                        #print("Row Data:")
                         rec_value = row_dict["RecommendedValue"]
-                        print("-" * 40)
-                        print(f"Policy name: {ref_key}")
-                        print(f"Value: {converted_value}")
-                        print(f"Recommended Value: {rec_value}")
-                        print(f"ConstantName: {key}")
-                        print("-" * 40 + str(counter))
-
+                        #print("-" * 40)
+                        #print(f"Policy name: {ref_key}")
+                        #print(f"Value: {converted_value}")
+                        #print(f"Recommended Value: {rec_value}")
+                        #print(f"ConstantName: {key}")
+                        #print("-" * 40 + str(counter))
+                        print(f"{ref_key},'{converted_value}','{rec_value}',{key}")
                         # Add to output data list
                         output_data.append({
                             "Policy name": ref_key,
@@ -175,15 +146,15 @@ for ref_key, ref_value in reference_dict.items():
                 entry = (ref_key, "Not Set", rec_value)
                 if entry not in unique_entries:  # Check if entry is unique
                     unique_entries.add(entry)  # Add to set of unique entries
-                    counter += 1
-                    print("Row Data:")
-                    print("-" * 40)
-                    print(f"Policy name: {ref_key}")
-                    print(f"Value: Not Set")
-                    print(f"Recommended Value: {rec_value}")
-                    print(f"ConstantName: {ref_value}")
-                    print("-" * 40 + str(counter))
-
+                    #counter += 1
+                    #print("Row Data:")
+                    #print("-" * 40)
+                    #print(f"Policy name: {ref_key}")
+                    #print(f"Value: Not Set")
+                    #print(f"Recommended Value: {rec_value}")
+                    #print(f"ConstantName: {ref_value}")
+                    #print("-" * 40 + str(counter))
+                    print(f"{ref_key},No One,'{rec_value}',{ref_value}")
                     # Add to output data list
                     output_data.append({
                         "Policy name": ref_key,

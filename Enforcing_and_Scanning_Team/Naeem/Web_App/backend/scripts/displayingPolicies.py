@@ -67,7 +67,7 @@ sid = {
     "*S-1-5-32-548": "Account Operators",
     "*S-1-5-32-549": "Server Operators",
     "*S-1-5-32-550": "Printer Operators",
-    "*S-1-5-90-0": r"Windows Manager\Windows Manager Group",
+    "*S-1-5-90-0": "Windows Manager\\Windows Manager Group",
     "*S-1-5-32-559": "Performance Log Users",
     "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
 }

@@ -9,6 +9,7 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const csv = require('csv');
 
 app.options('*',cors());
 app.use(cors());
@@ -16,10 +17,13 @@ app.use(cors());
 const user = require("../models/user");
 const scan = require("../models/scan");
 const benchmark = require("../models/benchmark")
-
+const baseline = require("../models/baseline")
 
 // import body-parser middleware
 const bodyParser = require("body-parser");
+
+app.use(bodyParser.text({ type: 'text/csv' }));
+
 
 // use the middleware
 app.use(bodyParser.json());
@@ -265,16 +269,6 @@ app.get("/openPolicy", (req, res, next) => {
                 // Send the output of the Python script as the response
                 res.status(200).send(stdout);
             });
-//    fs.readFile(filePath, 'utf8', (err, data) => {
-//      if (err) {
-//        console.log(`Error reading file ${filePath}:`, err);
-//        res.status(500).send('Error reading file');
-//        return;
-//      }
-
-//      res.status(200).send(data);
-//    });
-    //res.status(201).send(results);
   });
 })
 
@@ -335,7 +329,6 @@ app.get("/allBenchmarks", (req, res, next) => {
     });
   });
 
-
 app.get("/benchmark", (req, res, next) => {
 const filename = req.query.filename;
 
@@ -355,17 +348,155 @@ const filename = req.query.filename;
   });    
   });
 
-  
+app.post('/baseline', (req, res) => {
+    const csvData = req.body;
+    const baselineName = req.headers['baseline-name'];
+
+    console.log('Received CSV data:', csvData); // Log the received CSV data for debugging
+
+    // Parse the CSV data using the `csv` module
+    csv.parse(csvData, { columns: true, trim: true}, (err, records) => {
+        if (err) {
+            console.error('Error parsing CSV:', err); // Log the error details
+            return res.status(400).json({ error: 'Invalid CSV data', details: err.message });
+        }
+
+        // Log the parsed records for debugging
+        console.log('Parsed records:', records);
+
+        // Define the file path and name
+        const filePath = path.join(__dirname,'../baselines',`${baselineName}.csv`);
+
+        // Save the CSV data to a file
+        fs.writeFile(filePath, csvData, (err) => {
+            if (err) {
+                console.error('Error saving CSV data:', err); // Log the error details
+                return res.status(500).json({ error: 'Failed to save CSV data', details: err.message });
+            }
+		baseline.insertBaseline(baselineName+'.csv',function (err, result) {
+        if (!err) {
+            res.status(201).json({ message: "Saved baseline." });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+            res.status(200).json({ message: 'CSV data received and saved successfully' });
+        });
+    });
+});
 
 
 
+app.get("/allBaseline", (req, res, next) => {
+    baseline.getAllBaseline((error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send();
+      };
+      res.status(200).json(results);
+    });
+  });
 
+app.get("/baseline", (req, res, next) => {
+    filename = req.query.filename;
+    policyFileName = req.query.policyFileName;
+    baseline.getBaseline(filename,(error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send();
+      };
+    const baselinePath = path.join(__dirname, '../baselines');
+    const refPath = path.join(__dirname, '../scripts');
+    const scanPath = path.join(__dirname,'../scans/csv')
+    const pythonScript = path.join(__dirname, '../scripts/comparison.py');
+            const command = `python3 ${pythonScript} ${scanPath}/${policyFileName} ${baselinePath}/${filename} ${refPath}/policy_reference.csv`;
 
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing script: ${error}`);
+                    res.status(500).send(`Error executing script: ${error}`);
+                    return;
+                }
+                if (stderr) {
+                    console.error(`Script stderr: ${stderr}`);
+                    res.status(500).send(`Script error: ${stderr}`);
+                    return;
+                }
 
+                // Send the output of the Python script as the response
+                res.status(200).send(stdout);
+            });      
 
+    });
+  });
 
+app.post('/updatedPolicy', (req, res) => {
+    const csvData = req.body;
+    const fileName = req.headers['file-name'];
+    const ipaddr = req.headers['ip-address'];
+    // Parse the CSV data using the `csv` module
+    csv.parse(csvData, { columns: true, trim: true }, (err, records) => {
+        if (err) {
+            console.error('Error parsing CSV:', err); // Log the error details
+            return res.status(400).json({ error: 'Invalid CSV data', details: err.message });
+        }
 
+        // Convert the records back to CSV format
+        csv.stringify(records, { header: true }, (err, output) => {
+            if (err) {
+                console.error('Error stringifying CSV:', err); // Log the error details
+                return res.status(500).json({ error: 'Error stringifying CSV data', details: err.message });
+            }
+            const filePath = path.join(__dirname,'../config','tempConfig.csv');
+            // Write the CSV data to a file
+            fs.writeFile(filePath, output, (err) => {
+                if (err) {
+                    console.error('Error writing CSV to file:', err); // Log the error details
+                    return res.status(500).json({ error: 'Error writing CSV to file', details: err.message });
+                }
 
+                //res.status(200).json({ message: 'CSV data successfully written to file' });
+            });
+        });
+    });
+	// Initiate modifications	
+	const pythonScript = path.join(__dirname, '../scripts/enforcer.py');
+	var command = `python3 ${pythonScript} scans/inf/${fileName} config/tempConfig.csv`;
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing script: ${error}`);
+                    res.status(500).send(`Error executing script: ${error}`);
+                    return;
+                }
+                if (stderr) {
+                    console.error(`Script stderr: ${stderr}`);
+                    res.status(500).send(`Script error: ${stderr}`);
+                    return;
+                }
 
+                // Send the output of the Python script as the response
+                //res.status(200).send(stdout);
+            });
+
+	// Initiate the remote enforcing scripts
+    const scriptsPath = path.join(__dirname, '../scripts');
+//    const scanPath = path.join(__dirname,'../scans/inf')
+	var command = `sh ${scriptsPath}/automate_enforcing.sh ${ipaddr} ${fileName}`;
+	    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error.message);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+        // console.log(`Script stdout: ${stdout}`);
+        res.status(200).send(`Script executed successfully: ${stdout}`);
+    });	
+
+});
 
 module.exports = app
