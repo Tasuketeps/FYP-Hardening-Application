@@ -269,16 +269,6 @@ app.get("/openPolicy", (req, res, next) => {
                 // Send the output of the Python script as the response
                 res.status(200).send(stdout);
             });
-//    fs.readFile(filePath, 'utf8', (err, data) => {
-//      if (err) {
-//        console.log(`Error reading file ${filePath}:`, err);
-//        res.status(500).send('Error reading file');
-//        return;
-//      }
-
-//      res.status(200).send(data);
-//    });
-    //res.status(201).send(results);
   });
 })
 
@@ -440,21 +430,73 @@ app.get("/baseline", (req, res, next) => {
     });
   });
 
+app.post('/updatedPolicy', (req, res) => {
+    const csvData = req.body;
+    const fileName = req.headers['file-name'];
+    const ipaddr = req.headers['ip-address'];
+    // Parse the CSV data using the `csv` module
+    csv.parse(csvData, { columns: true, trim: true }, (err, records) => {
+        if (err) {
+            console.error('Error parsing CSV:', err); // Log the error details
+            return res.status(400).json({ error: 'Invalid CSV data', details: err.message });
+        }
 
+        // Convert the records back to CSV format
+        csv.stringify(records, { header: true }, (err, output) => {
+            if (err) {
+                console.error('Error stringifying CSV:', err); // Log the error details
+                return res.status(500).json({ error: 'Error stringifying CSV data', details: err.message });
+            }
+            const filePath = path.join(__dirname,'../config','tempConfig.csv');
+            // Write the CSV data to a file
+            fs.writeFile(filePath, output, (err) => {
+                if (err) {
+                    console.error('Error writing CSV to file:', err); // Log the error details
+                    return res.status(500).json({ error: 'Error writing CSV to file', details: err.message });
+                }
 
+                //res.status(200).json({ message: 'CSV data successfully written to file' });
+            });
+        });
+    });
+	// Initiate modifications	
+	const pythonScript = path.join(__dirname, '../scripts/enforcer.py');
+	var command = `python3 ${pythonScript} scans/inf/${fileName} config/tempConfig.csv`;
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing script: ${error}`);
+                    res.status(500).send(`Error executing script: ${error}`);
+                    return;
+                }
+                if (stderr) {
+                    console.error(`Script stderr: ${stderr}`);
+                    res.status(500).send(`Script error: ${stderr}`);
+                    return;
+                }
 
+                // Send the output of the Python script as the response
+                //res.status(200).send(stdout);
+            });
 
+	// Initiate the remote enforcing scripts
+    const scriptsPath = path.join(__dirname, '../scripts');
+//    const scanPath = path.join(__dirname,'../scans/inf')
+	var command = `sh ${scriptsPath}/automate_enforcing.sh ${ipaddr} ${fileName}`;
+	    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error}`);
+            res.status(500).send('Error executing script: ' + error.message);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            res.status(500).send('Script execution error: ' + stderr);
+            return;
+        }
+        // console.log(`Script stdout: ${stdout}`);
+        res.status(200).send(`Script executed successfully: ${stdout}`);
+    });	
 
-
-
-
-
-
-
-
-
-
-
-
+});
 
 module.exports = app

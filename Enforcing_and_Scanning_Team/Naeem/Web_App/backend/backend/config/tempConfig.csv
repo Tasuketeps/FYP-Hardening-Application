@@ -1,0 +1,32 @@
+Constant Name,Recommended Value
+SeTrustedCredManAccessPrivilege,No One
+SeNetworkLogonRight,"Administrators, Remote Desktop Users"
+SeTcbPrivilege,No One
+SeIncreaseQuotaPrivilege,"Administrators, LOCAL SERVICE, NETWORK SERVICE"
+SeInteractiveLogonRight,"Administrators, Users"
+SeRemoteInteractiveLogonRight,"Administrators, Remote Desktop Users"
+SeBackupPrivilege,Administrators
+SeSystemtimePrivilege,"Administrators, LOCAL SERVICE"
+SeTimeZonePrivilege,"Administrators, LOCAL SERVICE, Users"
+SeCreatePagefilePrivilege,Administrators
+SeCreateTokenPrivilege,No One
+SeCreateGlobalPrivilege,"Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE"
+SeCreatePermanentPrivilege,No One
+SeDebugPrivilege,Administrators
+SeEnableDelegationPrivilege,No One
+SeRemoteShutdownPrivilege,Administrators
+SeAuditPrivilege,"LOCAL SERVICE, NETWORK SERVICE"
+SeImpersonatePrivilege,"Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE"
+SeIncreaseBasePriorityPrivilege,"Administrators, Window Manager \Window Manager Group"
+SeLoadDriverPrivilege,Administrators
+SeLockMemoryPrivilege,No One
+SeSecurityPrivilege,Administrators
+SeRelabelPrivilege,No One
+SeSystemEnvironmentPrivilege,Administrators
+SeManageVolumePrivilege,Administrators
+SeProfileSingleProcessPrivilege,Administrators
+SeSystemProfilePrivilege,"Administrators, NT SERVICE \WdiServiceHost"
+SeAssignPrimaryTokenPrivilege,"LOCAL SERVICE, NETWORK SERVICE"
+SeRestorePrivilege,Administrators
+SeShutdownPrivilege,"Administrators, Users"
+SeTakeOwnershipPrivilege,Administrators

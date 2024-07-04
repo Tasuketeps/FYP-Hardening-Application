@@ -1,28 +1,32 @@
 Policy name,Value,Recommended Value,ConstantName
-Enforce password history,24,24 or more password(s),PasswordHistorySize
-Maximum password age,50,"365 or fewer days, but not 0",MaximumPasswordAge
-Minimum password age,10,1 or more day(s),MinimumPasswordAge
-Minimum password length,10,14 or more character(s),MinimumPasswordLength
-Password must meet complexity requirements,1,Enabled,PasswordComplexity
-Store passwords using reversible encryption,0,Disabled,ClearTextPassword
-Account lockout duration,Not Set,15 or more minute(s),LockoutDuration
-Account lockout threshold,0,"5 or fewer invalid logon attempt(s), but not 0",LockoutBadCount
 Access Credential Manager as a trusted caller,Not Set,No One,SeTrustedCredManAccessPrivilege
-Access this computer from the network,"Administrators,Remote Desktop Users,ENTERPRISE DOMAIN CONTROLLERS","Administrators, Remote Desktop Users",SeNetworkLogonRight
+Access this computer from the network,"Administrators,Remote Desktop Users","Administrators, Remote Desktop Users",SeNetworkLogonRight
 Act as part of the operating system,Not Set,No One,SeTcbPrivilege
 Adjust memory quotas for a process,"LOCAL SERVICE,NETWORK SERVICE,Administrators","Administrators, LOCAL SERVICE, NETWORK SERVICE",SeIncreaseQuotaPrivilege
-Allow log on locally,"Administrators,Account Operators,Server Operators,Printer Operators,Backup Operators,ENTERPRISE DOMAIN CONTROLLERS","Administrators, Users",SeInteractiveLogonRight
-Allow log on through Remote Desktop Services,Administrators,"Administrators, Remote Desktop Users",SeRemoteInteractiveLogonRight
-Back up files and directories,"Administrators,Server Operators,Backup Operators",Administrators,SeBackupPrivilege
-Change the system time,"LOCAL SERVICE,Administrators,Server Operators","Administrators, LOCAL SERVICE",SeSystemtimePrivilege
-Change the time zone,"LOCAL SERVICE,Administrators,Server Operators","Administrators, LOCAL SERVICE, Users",SeTimeZonePrivilege
+Allow log on locally,"Administrators,Users","Administrators, Users",SeInteractiveLogonRight
+Allow log on through Remote Desktop Services,"Administrators,Remote Desktop Users","Administrators, Remote Desktop Users",SeRemoteInteractiveLogonRight
+Back up files and directories,Administrators,Administrators,SeBackupPrivilege
+Change the system time,"LOCAL SERVICE,Administrators","Administrators, LOCAL SERVICE",SeSystemtimePrivilege
+Change the time zone,"LOCAL SERVICE,Administrators,Users","Administrators, LOCAL SERVICE, Users",SeTimeZonePrivilege
 Create a pagefile,Administrators,Administrators,SeCreatePagefilePrivilege
 Create a token object,Not Set,No One,SeCreateTokenPrivilege
 Create global objects,"LOCAL SERVICE,NETWORK SERVICE,Administrators,Service","Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",SeCreateGlobalPrivilege
 Create permanent shared objects,Not Set,No One,SeCreatePermanentPrivilege
 Debug programs,Administrators,Administrators,SeDebugPrivilege
-Enable computer and user accounts to be trusted for delegation,Administrators,No One,SeEnableDelegationPrivilege
-Force shutdown from a remote system,"Administrators,Server Operators",Administrators,SeRemoteShutdownPrivilege
+Enable computer and user accounts to be trusted for delegation,Not Set,No One,SeEnableDelegationPrivilege
+Force shutdown from a remote system,Administrators,Administrators,SeRemoteShutdownPrivilege
 Generate security audits,"LOCAL SERVICE,NETWORK SERVICE","LOCAL SERVICE, NETWORK SERVICE",SeAuditPrivilege
 Impersonate a client after authentication,"LOCAL SERVICE,NETWORK SERVICE,Administrators,Service","Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",SeImpersonatePrivilege
 Increase scheduling priority,"Administrators,Windows Manager\Windows Manager Group","Administrators, Window Manager \Window Manager Group",SeIncreaseBasePriorityPrivilege
+Load and unload device drivers,Administrators,Administrators,SeLoadDriverPrivilege
+Lock pages in memory,Not Set,No One,SeLockMemoryPrivilege
+Manage auditing and security log,Administrators,Administrators,SeSecurityPrivilege
+Modify an object label,Not Set,No One,SeRelabelPrivilege
+Modify firmware environment values,Administrators,Administrators,SeSystemEnvironmentPrivilege
+Perform volume maintenance tasks,Administrators,Administrators,SeManageVolumePrivilege
+Profile single process,Administrators,Administrators,SeProfileSingleProcessPrivilege
+Profile system performance,"Administrators,NT SERVICE\WdiServiceHost","Administrators, NT SERVICE \WdiServiceHost",SeSystemProfilePrivilege
+Replace a process level token,"LOCAL SERVICE,NETWORK SERVICE","LOCAL SERVICE, NETWORK SERVICE",SeAssignPrimaryTokenPrivilege
+Restore files and directories,Administrators,Administrators,SeRestorePrivilege
+Shut down the system,"Administrators,Users","Administrators, Users",SeShutdownPrivilege
+Take ownership of files or other objects,Administrators,Administrators,SeTakeOwnershipPrivilege

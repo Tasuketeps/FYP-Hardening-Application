@@ -89,7 +89,8 @@ sid = {
     "*S-1-5-32-550": "Printer Operators",
     "*S-1-5-90-0": "Windows Manager\\Windows Manager Group",
     "*S-1-5-32-559": "Performance Log Users",
-    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost"
+    "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420": "NT SERVICE\\WdiServiceHost",
+    "*S-1-5-83-0": "NT VIRTUAL MACHINE\\Virtual Machines"
 }
 
 counter = 0
@@ -153,7 +154,7 @@ for ref_key, ref_value in reference_dict.items():
                     #print(f"Recommended Value: {rec_value}")
                     #print(f"ConstantName: {ref_value}")
                     #print("-" * 40 + str(counter))
-                    print(f"{ref_key},Null,'{rec_value}',{ref_value}")
+                    print(f"{ref_key},No One,'{rec_value}',{ref_value}")
                     # Add to output data list
                     output_data.append({
                         "Policy name": ref_key,
