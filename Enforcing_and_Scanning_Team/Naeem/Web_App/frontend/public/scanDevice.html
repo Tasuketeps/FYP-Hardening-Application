@@ -197,6 +197,10 @@
             });
             $('#generateCSV').on('click', function () {
                 var data = [];
+                var devicePolicy = sessionStorage.getItem('devicePolicyFileName');
+                devicePolicy = JSON.parse(devicePolicy)
+                var selectedIp = $('#ipSelect').val();
+                console.log(selectedIp)
                 // Select all table rows
                 $('#policyResults table tbody tr').each(function () {
                     var constantName = $(this).find('td').eq(3).text();
@@ -214,6 +218,10 @@
                     timeout: 0,
                     contentType: "text/csv",
                     data: csvContent,
+                    headers: {
+                        'File-Name': devicePolicy,
+                        'Ip-Address': selectedIp
+                    }
                 };
 
                 $.ajax(settings).done(function (response) {
