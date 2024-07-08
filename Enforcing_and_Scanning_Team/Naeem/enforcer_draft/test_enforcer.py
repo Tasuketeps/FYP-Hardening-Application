@@ -1,7 +1,7 @@
 import csv
 import sys
 import codecs
-
+import re
 # Define the file paths
 inf_file_path = sys.argv[1]
 csv_file_path = sys.argv[2]
@@ -52,6 +52,13 @@ def convert_to_sid(value):
         return ','.join(reverse_sid.get(v, v) for v in values)
     return reverse_sid.get(value, value)
 
+def extract_first_number(value):
+    pattern = r'\b(\d+)\b'
+    match = re.search(pattern, value)
+    if match:
+        return int(match.group(1))
+    return None
+
 # Read the .inf file and store its contents
 with open(inf_file_path, 'r', encoding='utf-16') as inf_file:
     inf_contents = inf_file.readlines()
@@ -69,6 +76,16 @@ for line in inf_contents:
         key = key.strip()
         if key in csv_data:
             new_value = csv_data[key]
+                        
+            # Check if new_value matches specific formats to remove the line
+            if re.match(r'^\d+ (or more|or fewer) .+\(s\)$', new_value):
+                # Extract the first numerical value
+                number = extract_first_number(new_value)
+                if number is not None:
+                    new_value = str(number)
+                else:
+                    print(f"Cannot extract number from: {new_value}. Skipping line.")
+                    continue
             if new_value == 'No One':
                 print(f"Removing line for key: {key}")  # Debugging print statement
                 continue  # Skip adding this line to updated contents
