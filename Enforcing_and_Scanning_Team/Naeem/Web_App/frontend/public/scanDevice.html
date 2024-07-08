@@ -74,8 +74,17 @@
             lines.forEach(function (line) {
                 var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
                 if (match) {
+                    var ip = match[1];
+                    var lastOctet = ip.split('.').pop(); // Get the last octet of the IP address
+
+                    // Skip IP addresses ending with .254, .1, or .2
+                    if (lastOctet === '254' || lastOctet === '1' || lastOctet === '2') {
+                        return; // Skip this iteration
+                    }
+
+                    // Append the device entry to the devices array
                     devices.push({
-                        ip: match[1],
+                        ip: ip,
                         mac: match[2],
                         manufacturer: match[3]
                     });

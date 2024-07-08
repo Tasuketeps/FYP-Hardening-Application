@@ -50,7 +50,8 @@
         </div>
         <div class="col-md-6">
             <button id="load-benchmark" class="btn btn-primary">Load Benchmark</button>
-            <input type="text" id="baseline-name" class="form-control" placeholder="Enter Baseline Name" style="display: inline-block; width: auto">
+            <input type="text" id="baseline-name" class="form-control" placeholder="Enter Baseline Name"
+                style="display: inline-block; width: auto">
             <button id="create-baseline" class="btn btn-secondary">Create Baseline</button>
         </div>
     </div>
@@ -60,6 +61,7 @@
                 <thead>
                     <tr>
                         <th>Select</th>
+                        <th>#</th>
                         <th>ID</th>
                         <th>Category</th>
                         <th>Setting</th>
@@ -103,11 +105,15 @@
                                 var rows = results.data;
 
                                 // Loop through rows and create table rows
+                                counter = 0
                                 rows.forEach(function (columns) {
                                     // Ensure the row has exactly 4 columns
+                                    counter += 1
                                     if (columns.length === 4) {
+
                                         var newRow = '<tr data-policyName="' + columns[2] + '">' +
                                             '<td><input type="checkbox" class="form-check-input select-policy" value="' + columns[2] + '"></td>' +
+                                            '<td>' + counter + '</td>' +
                                             '<td>' + columns[0] + '</td>' +
                                             '<td>' + columns[1] + '</td>' +
                                             '<td class="policy-name">' + columns[2] + '</td>' +
