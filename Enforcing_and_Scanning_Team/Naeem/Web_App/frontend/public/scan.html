@@ -273,34 +273,56 @@
                 // Iterate through selected IP addresses and call the specific endpoint
                 selectedIps.forEach(function (ip, index) {
                     setTimeout(function () {
-                        var settings = {
-                            "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ip,
+                        // First, get the username for the IP address
+                        var userSettings = {
+                            "url": "http://192.168.126.148:3000/sshUser?ipaddress=" + ip,
                             "method": "GET",
                             "timeout": 0,
                         };
 
-                        $.ajax(settings).done(function (response) {
-                            console.log(response);
-                            scanid = response['insertId'];
-                            createdAt = response['createdAt'];
-                            // Handle the response as needed
-                            $('tr[data-ip="' + ip + '"]').addClass('scan-success');
-                            // Remove the grey out and the scanning message when the last IP is processed
+                        $.ajax(userSettings).done(function (userResponse) {
+                            console.log(userResponse);
+                            var username = userResponse[0].username;
 
-                            // Update the lastscan column for the corresponding IP
-                            $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
-                            $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
-                            if (index === selectedIps.length - 1) {
-                                $('#result').removeClass('grayed-out');
-                            }
+                            // Now, make the policy-scan request with the IP and username
+                            var scanSettings = {
+                                "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ip + "&username=" + username,
+                                "method": "GET",
+                                "timeout": 0,
+                            };
+
+                            $.ajax(scanSettings).done(function (scanResponse) {
+                                console.log(scanResponse);
+                                var scanid = scanResponse['insertId'];
+                                var createdAt = scanResponse['createdAt'];
+
+                                // Handle the response as needed
+                                $('tr[data-ip="' + ip + '"]').addClass('scan-success');
+
+                                // Update the lastscan column for the corresponding IP
+                                $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
+                                $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
+                                if (index === selectedIps.length - 1) {
+                                    $('#result').removeClass('grayed-out');
+                                }
+                            }).fail(function () {
+                                console.error("Failed to scan " + ip);
+
+                                // Remove the grey out and the scanning message when the last IP is processed
+                                if (index === selectedIps.length - 1) {
+                                    $('#result').removeClass('grayed-out');
+                                }
+                            });
+
                         }).fail(function () {
-                            console.error("Failed to scan " + ip);
+                            console.error("Failed to get username for " + ip);
 
                             // Remove the grey out and the scanning message when the last IP is processed
                             if (index === selectedIps.length - 1) {
                                 $('#result').removeClass('grayed-out');
                             }
                         });
+
                     }, index * 1000); // Adding a delay of 1 second between each request for better visualization
                 });
             });
