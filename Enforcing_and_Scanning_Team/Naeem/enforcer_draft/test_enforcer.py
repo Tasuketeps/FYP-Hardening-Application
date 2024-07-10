@@ -59,6 +59,9 @@ def extract_first_number(value):
         return int(match.group(1))
     return None
 
+# Generalized pattern to match values with numerical prefixes and any trailing text
+generalized_pattern = re.compile(r'^\d+.*\(s\)$|^\d+.* day\(s\)$|^\d+.*fewer days, but not 0$|^\d+.* character\(s\)$|^\d+ or more.*')
+
 # Read the .inf file and store its contents
 with open(inf_file_path, 'r', encoding='utf-16') as inf_file:
     inf_contents = inf_file.readlines()
@@ -75,10 +78,9 @@ for line in inf_contents:
         key, sep, value = line.partition('=')
         key = key.strip()
         if key in csv_data:
-            new_value = csv_data[key]
-                        
+            new_value = csv_data[key]    
             # Check if new_value matches specific formats to remove the line
-            if re.match(r'^\d+ (or more|or fewer) .+\(s\)$', new_value):
+            if generalized_pattern.match(new_value):
                 # Extract the first numerical value
                 number = extract_first_number(new_value)
                 if number is not None:
@@ -91,6 +93,10 @@ for line in inf_contents:
                 continue  # Skip adding this line to updated contents
             if key.startswith('Se'):
                 new_value = convert_to_sid(new_value)
+            if new_value == 'Enabled':
+                new_value = 1
+            if new_value == 'Disabled':
+                new_value = 0
             line = f"{key} = {new_value}\n"
             print(f"Updated line: {line.strip()}")  # Debugging print statement
     updated_inf_contents.append(line)

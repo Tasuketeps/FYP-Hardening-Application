@@ -221,6 +221,7 @@
                     var row = rowArray[0] + ',"' + rowArray[1] + '"';
                     csvContent += row + "\r\n";
                 });
+                console.log(csvContent);
                 var settings = {
                     url: "http://192.168.126.148:3000/updatedPolicy",
                     method: "POST",

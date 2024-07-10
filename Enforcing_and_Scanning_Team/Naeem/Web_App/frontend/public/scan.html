@@ -51,6 +51,7 @@
         <!-- <button id="checkDatabase" class="btn btn-primary" style="display: none;">Refresh</button> -->
         <button id="scan" class="btn btn-primary">Scan</button>
         <button id="scanButton" class="btn btn-primary" style="display:none">Synchronise Selected Devices</button>
+        <button id="clearButton" class="btn btn-primary" style="display:none">Clear</button>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#settingsModal">
             <i class="bi bi-gear"></i>
         </button>
@@ -139,11 +140,11 @@
             }
 
             $(document).on("click", "#scan", function () {
-                    var ipAddress = sessionStorage.getItem('ipAddress');
-                    ipAddress = JSON.parse(ipAddress);
-                    console.log(ipAddress);
-                    performScan(ipAddress);
-                });
+                var ipAddress = sessionStorage.getItem('ipAddress');
+                ipAddress = JSON.parse(ipAddress);
+                console.log(ipAddress);
+                performScan(ipAddress)
+            });
 
             function performScan(ipAddress) {
                 var settings = {
@@ -201,7 +202,7 @@
                     }
                 });
 
-                console.log("Devices:", devices);
+                // console.log("Devices:", devices);
 
                 // Generating HTML content
                 if (devices.length > 0) {
@@ -223,6 +224,8 @@
                     // $('#checkDatabase').show();
                     $('#selectAllBtn').show();
                     $('#deselectAllBtn').show();
+                    $('#clearButton').show();
+                    refreshPolicies()
                 } else {
                     resultDiv.html('<p>No connected devices found.</p>');
                     $('#scanButton').hide();
@@ -237,15 +240,17 @@
                 $('#result').show();
             }
 
-
-
-
-            $(document).on("click", ".ipaddr", function () {
-                var ipaddress = $(this).text()
-                // Store the game name and platform in the local storage
-                localStorage.setItem('selectedIp', ipaddress);
-
-            });
+            $('#clearButton').on('click', function () {
+                sessionStorage.removeItem('scanData');
+                var resultDiv = $('#result')
+                resultDiv.html('');
+                $('#scanButton').hide();
+                // $('#checkDatabase').hide();
+                $('#selectAllBtn').hide();
+                $('#deselectAllBtn').hide();
+                $('#clearButton').hide();
+                // console.log('test')
+            })
 
             // Handle the click event of the scan button
             $('#scanButton').on('click', function () {
@@ -327,18 +332,17 @@
 
             $('#result').addClass('grayed-out');
             // Get selected IP addresses
+
+        });
+
+        function refreshPolicies() {
+            $('#result').addClass('grayed-out');
             var selectedIps = [];
-            $('.select-device:checked').each(function () {
+
+            $('.select-device').each(function () {
                 selectedIps.push($(this).val());
                 console.log(selectedIps);
             });
-
-            // Check if any IP addresses are selected
-            if (selectedIps.length === 0) {
-                alert('No devices selected.');
-                $('#result').removeClass('grayed-out');
-                return;
-            }
 
             // Iterate through selected IP addresses with a delay between each call
             selectedIps.forEach(function (ip, index) {
@@ -374,7 +378,7 @@
                     });
                 }, index * 1000); // Delay each iteration by 1 second (1000 milliseconds)
             });
-        });
+        }
 
 
         $(document).ready(function () {

@@ -1,7 +1,6 @@
 Constant Name, Recommended Value
-MinimumPasswordAge,1
-MaximumPasswordAge,365
-MinimumPasswordLength,14
-PasswordComplexity,1
-PasswordHistorySize,23
-SeMachineAccountPrivilege,"Administrators"
+PasswordHistorySize,"24 or more password(s)"
+MaximumPasswordAge,"365 or fewer days, but not 0"
+MinimumPasswordAge,"1 or more day(s)"
+MinimumPasswordLength,"14 or more character(s)"
+PasswordComplexity,"Enabled"
