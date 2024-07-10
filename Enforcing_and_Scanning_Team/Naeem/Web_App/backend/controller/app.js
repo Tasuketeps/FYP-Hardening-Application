@@ -83,7 +83,8 @@ app.get('/execute-secedit', (req, res) => {
 
 // Scan for connected devices to the domain network endpoint
 app.get('/scan', (req, res) => {
-    exec('expect scripts/arp_scan.sh', (error, stdout, stderr) => {
+    ipaddr = req.query.ipaddr;
+    exec('expect scripts/arp_scan.sh ' + ipaddr, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing script: ${error}`);
             res.status(500).send('Error executing script: ' + error + __dirname);
