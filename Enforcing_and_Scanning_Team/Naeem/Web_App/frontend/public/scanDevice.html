@@ -56,7 +56,7 @@
         </select>
         <button id="scanButton" class="btn btn-primary">Scan Selected IP</button>
         <div id="policyResults" class="table-responsive"></div>
-        <button id="generateCSV" class="btn btn-primary">Configure</button>
+        <button id="generateCSV" class="btn btn-primary" style="display: none;">Configure</button>
 
 
     </div>
@@ -64,6 +64,7 @@
     <script>
         $(document).ready(function () {
             // Retrieve scan data from sessionStorage
+            $('#generateCSV').hide();
             var scanData = sessionStorage.getItem('scanData');
             scanData = JSON.parse(scanData)
             var ipSelect = $('#ipSelect');
@@ -203,6 +204,8 @@
                     });
                     formattedHTML += '</tbody></table>';
                     policyResults.html(formattedHTML);
+                    $('#generateCSV').show()
+                    
                 });
             });
             $('#generateCSV').on('click', function () {

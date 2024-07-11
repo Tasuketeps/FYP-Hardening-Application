@@ -234,7 +234,7 @@
         <script>
             $(document).ready(function () {
                 var scanData = sessionStorage.getItem('scanData');
-                scanData = JSON.parse(scanData)
+                scanData = JSON.parse(scanData);
                 var resultDiv = $('#result');
                 var lines = scanData.split('\n');
                 var devices = [];
@@ -278,40 +278,76 @@
                             // IP Address label and input
                             userGroup.append('<label class="form-label">IP Address: ' + user.ipaddress + '</label>');
 
-                            // Dropdown for username selection
-                            var select = $('<select class="form-control"></select>');
-                            select.append('<option value="' + user.username + '">' + user.username + '</option>');
-                            userGroup.append(select);
+                            // Text input for username
+                            var input = $('<input type="text" class="form-control" value="' + user.username + '">');
+                            userGroup.append(input);
 
                             // Button to modify username
                             var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
                             modifyButton.on('click', function () {
-                                var newUsername = prompt("Enter new username for " + user.ipaddress, user.username);
+                                var newUsername = input.val();
+                                var initialUsername = user.username;
+
                                 if (newUsername) {
-                                    // Here you would typically send the new username to your server to update the user info
-                                    // For example, using another AJAX call:
-                                    // $.ajax({
-                                    //     url: 'http://192.168.126.148:3000/updateUsername',
-                                    //     method: 'POST',
-                                    //     data: { sshid: user.sshid, newUsername: newUsername }
-                                    // });
-                                    alert('Username for ' + user.ipaddress + ' changed to ' + newUsername);
-                                    // Update the dropdown option
-                                    select.html('<option value="' + newUsername + '">' + newUsername + '</option>');
+                                    var method = initialUsername ? "PUT" : "POST";
+
+                                    // Send the new username to your server to update the user info
+                                    $.ajax({
+                                        url: 'http://192.168.126.148:3000/sshUser',
+                                        method: method,
+                                        data: { ipaddress: user.ipaddress, username: newUsername },
+                                        success: function () {
+                                            alert('Username for ' + user.ipaddress + ' changed to ' + newUsername);
+                                        }
+                                    });
                                 }
                             });
                             userGroup.append(modifyButton);
 
                             userListDiv.append(userGroup);
                         });
+                    }).fail(function (jqXHR) {
+                        if (jqXHR.status === 404) {
+                            // Handle case where no user was found
+                            var userListDiv = $('#userList');
+                            var userGroup = $('<div class="form-group"></div>');
+
+                            // IP Address label and input
+                            userGroup.append('<label class="form-label">IP Address: ' + ip + '</label>');
+
+                            // Blank input for username
+                            var input = $('<input type="text" class="form-control" value="">');
+                            userGroup.append(input);
+
+                            // Button to modify username
+                            var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
+                            modifyButton.on('click', function () {
+                                var newUsername = input.val();
+                                if (newUsername) {
+                                    // Send the new username to your server to add the user info
+                                    $.ajax({
+                                        url: 'http://192.168.126.148:3000/sshUser',
+                                        method: 'POST',
+                                        data: { ipaddress: ip, username: newUsername },
+                                        success: function () {
+                                            alert('Username for ' + ip + ' changed to ' + newUsername);
+                                        }
+                                    });
+                                }
+                            });
+                            userGroup.append(modifyButton);
+
+                            userListDiv.append(userGroup);
+                        }
                     });
                 }
 
                 // Iterate over each device and make an AJAX call for each IP
                 devices.forEach(function (device) {
-                    fetchUserDetails(device.ip)
+                    fetchUserDetails(device.ip);
                 });
             });
+
 
         </script>
 </body>
