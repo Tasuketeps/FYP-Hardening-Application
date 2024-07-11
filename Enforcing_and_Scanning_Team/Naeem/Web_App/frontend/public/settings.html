@@ -143,6 +143,7 @@
                     <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
                     <li><a href="register.html">Add users</a></li>
                     <li><a href="baseline.html">Configure Baseline</a></li>
+                    <li><a href="settings.html">Settings</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" id="Logout">Logout</a></li>
@@ -163,7 +164,8 @@
                         <a class="list-group-item active" data-toggle="tab" href="#profile">General</a>
                         <a class="list-group-item" data-toggle="tab" href="#changePassword">Change password</a>
                         <a class="list-group-item" data-toggle="tab" href="#networkSettings">Network</a>
-                        <a class="list-group-item" data-toggle="tab" href="#credentialSettings">Windows Machines Usernames</a>
+                        <a class="list-group-item" data-toggle="tab" href="#credentialSettings">Windows Machines
+                            Usernames</a>
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -231,48 +233,85 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
             $(document).ready(function () {
+                var scanData = sessionStorage.getItem('scanData');
+                scanData = JSON.parse(scanData)
+                var resultDiv = $('#result');
+                var lines = scanData.split('\n');
+                var devices = [];
 
-                var settings = {
-                    "url": "http://192.168.126.148:3000/sshUsers",
-                    "method": "GET",
-                    "timeout": 0,
-                };
+                lines.forEach(function (line) {
+                    console.log("Processing line:", line);
 
-                $.ajax(settings).done(function (response) {
-                    var userListDiv = $('#userList');
-                    response.forEach(function (user) {
-                        var userGroup = $('<div class="form-group"></div>');
+                    // Trim the line to remove any leading or trailing whitespace
+                    line = line.trim();
 
-                        // IP Address label and input
-                        userGroup.append('<label class="form-label">IP Address: ' + user.ipaddress + '</label>');
+                    // Regex to match IP address and MAC address followed by manufacturer
+                    var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
 
-                        // Dropdown for username selection
-                        var select = $('<select class="form-control"></select>');
-                        select.append('<option value="' + user.username + '">' + user.username + '</option>');
-                        userGroup.append(select);
+                    if (match) {
+                        console.log("Matched line:", match);
+                        var ipAddress = match[1];
+                        var lastOctet = parseInt(ipAddress.split('.').pop());
 
-                        // Button to modify username
-                        var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
-                        modifyButton.on('click', function () {
-                            var newUsername = prompt("Enter new username for " + user.ipaddress, user.username);
-                            if (newUsername) {
-                                // Here you would typically send the new username to your server to update the user info
-                                // For example, using another AJAX call:
-                                // $.ajax({
-                                //     url: 'http://192.168.126.148:3000/updateUsername',
-                                //     method: 'POST',
-                                //     data: { sshid: user.sshid, newUsername: newUsername }
-                                // });
-                                alert('Username for ' + user.ipaddress + ' changed to ' + newUsername);
-                                // Update the dropdown option
-                                select.html('<option value="' + newUsername + '">' + newUsername + '</option>');
-                            }
+                        // Filter out IP addresses ending in .1, .2, or .254
+                        if (lastOctet !== 1 && lastOctet !== 2 && lastOctet !== 254) {
+                            devices.push({
+                                ip: match[1]
+                            });
+                        }
+                    }
+                });
+
+                // Function to make AJAX call for each device IP
+                function fetchUserDetails(ip) {
+                    var settings = {
+                        "url": "http://192.168.126.148:3000/sshUser?ipaddress=" + ip,
+                        "method": "GET",
+                        "timeout": 0,
+                    };
+
+                    $.ajax(settings).done(function (response) {
+                        var userListDiv = $('#userList');
+                        response.forEach(function (user) {
+                            var userGroup = $('<div class="form-group"></div>');
+
+                            // IP Address label and input
+                            userGroup.append('<label class="form-label">IP Address: ' + user.ipaddress + '</label>');
+
+                            // Dropdown for username selection
+                            var select = $('<select class="form-control"></select>');
+                            select.append('<option value="' + user.username + '">' + user.username + '</option>');
+                            userGroup.append(select);
+
+                            // Button to modify username
+                            var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
+                            modifyButton.on('click', function () {
+                                var newUsername = prompt("Enter new username for " + user.ipaddress, user.username);
+                                if (newUsername) {
+                                    // Here you would typically send the new username to your server to update the user info
+                                    // For example, using another AJAX call:
+                                    // $.ajax({
+                                    //     url: 'http://192.168.126.148:3000/updateUsername',
+                                    //     method: 'POST',
+                                    //     data: { sshid: user.sshid, newUsername: newUsername }
+                                    // });
+                                    alert('Username for ' + user.ipaddress + ' changed to ' + newUsername);
+                                    // Update the dropdown option
+                                    select.html('<option value="' + newUsername + '">' + newUsername + '</option>');
+                                }
+                            });
+                            userGroup.append(modifyButton);
+
+                            userListDiv.append(userGroup);
                         });
-                        userGroup.append(modifyButton);
-
-                        userListDiv.append(userGroup);
                     });
+                }
+
+                // Iterate over each device and make an AJAX call for each IP
+                devices.forEach(function (device) {
+                    fetchUserDetails(device.ip)
                 });
             });
+
         </script>
 </body>
