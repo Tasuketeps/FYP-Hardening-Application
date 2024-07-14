@@ -1,130 +1,214 @@
+
+
 <!DOCTYPE html>
+
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="css/login.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
 
+</head>
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigation Bar</title>
+    <title>SP AHS</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="css/index.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        /* Fullscreen Background Image */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease-in-out;
+            z-index: -1;
+        }
+
+        .background1 {
+            opacity: 1;
+        }
+
+        .background2 {
+            opacity: 0;
+        }
+
+        .show {
+            opacity: 1;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: darkgreen;
+            padding: 8px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 10px;
+            display: block;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            color: azure;
+        }
+
+        .navbar .menu {
+            display: flex;
+            margin-left: auto;   
+            margin-right: 20px;
+        }
+
+        .navbar .menu a {
+            margin-left: 20px;
+        }
+
+
+
+
+        /* Login Container */
+        .login-container {
+            text-align: center;
+            margin-top: 50px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .login-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            cursor: pointer;
+            font-size: 1.4em;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: block;
+            width: 200px; 
+            margin-bottom: 10px;
+        }
+
+        .signup-btn {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            cursor: pointer;
+            font-size: 1.4em;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: block;
+            width: 200px;
+        }
+
+
+
+
+        .login-btn:hover, .signup-btn:hover {
+            background-color: blue;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: -380px;
+            margin-left: 850px;
+        }
     </style>
 </head>
-<body>
-
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#navbar-collapse" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="home.html">Home</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-</body>
-</html>
-
 
 
 
 <body>
-    <div class="row justify-content-center">
-        <h1>Admin Login Page</h1>
-        <div class="login-form">
-            <form action="">
-                <h2 class="text-center">Log in</h2>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="username" placeholder="Username" required="required">
-                </div>
-                <div class="form-group">
-                    <div class="input-group" id="show_hide_password">
-                        <input class="form-control" id="pwd" placeholder="Password" type="password">
-                        <div class="input-group-addon">
-                            <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">Remember Me</label>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block" id="Login">Log in</button>
-                </div>
-            </form>
+    <div class="background background1" id="background1"></div>
+    <div class="background background2" id="background2"></div>
+    
+    <div class="navbar">
+        <div class="logo">AHS(SP)</div>
+        <div class="menu">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
         </div>
     </div>
 
+    <div class="login-container">
+        <h1>Welcome to our Automated Hardening System(SP)</h1>   
+        <h2>Thank you for choosing our system application!</h2>
+        <h2>Our state-of-the-art system is designed to enhance the security <br> and resilience of your WinOS applications and infrastructure<br> with minimal effort on your part.</h2>
+        <h2>If you have any questions or need assistance, please do not hesitate<br> to contact our support team (support@ahsSP.com). <br> We are here to help you every step of the way.</h2>
+        <h2>Once again, thank you for partnering with us to secure your digital assets.<br> We look forward to helping you achieve a more secure and resilient future</h2>
+        <h3><span class="warning-text">WARNING:</span> This Application settings can only be modified by System Administrators</h3>
+        <h4 class="text-center">Please Log In<br> with your Credentials</h4>
+        <div class="button-container">
+            <button class="login-btn" onclick="location.href='login.html'">Log In</button>
+            <!-- <button class="signup-btn" onclick="location.href='register.html'">Sign Up</button> -->
+        </div>
+    </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function () {  // $(function () {})
-            $("#Login").click(function () {
-                var username = $('#username').val();
-                var pwd = $('#pwd').val();
-                var data = "{\"username\":\"" + username + "\", \"password\":\"" + pwd + "\"}";
-                console.log(data);
-                $.ajax({
-                    url: 'http://192.168.126.148:3000/user/login',
-                    type: 'POST',
-                    data: data,
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (data, textStatus, xhr) {
-                        if (data != null) {
-                            localStorage.setItem('token', data.token);
-                            localStorage.setItem('userInfo', data.UserData);
-                            window.location.assign("http://localhost:3001/home.html");
-                        } else {
-                            console.log("Error");
-                        }
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log('Error in Operation');
-                        window.alert("Username or password is wrong!")
-                        // Clear username and password fields after unsuccessful login attempt
-                        $('#username').val('');
-                        $('#pwd').val('');
-                    }
-                });
-                return false;
-            });
+        // Array of background images
+        const images = [
+            'url("images/AHS-7.avif")',
+            'url("images/AHS-2.jpg")',
+            'url("images/AHS-1.png")',
+            'url("images/AHS-4.avif")'
+        ];
 
-            $("#show_hide_password a").on('click', function (event) {
-                event.preventDefault();
-                if ($('#show_hide_password input').attr("type") == "text") {
-                    $('#show_hide_password input').attr('type', 'password');
-                    $('#show_hide_password i').addClass("fa-eye-slash");
-                    $('#show_hide_password i').removeClass("fa-eye");
-                } else if ($('#show_hide_password input').attr("type") == "password") {
-                    $('#show_hide_password input').attr('type', 'text');
-                    $('#show_hide_password i').removeClass("fa-eye-slash");
-                    $('#show_hide_password i').addClass("fa-eye");
-                }
-            });
+        let currentIndex = 0;
+        const background1 = document.getElementById('background1');
+        const background2 = document.getElementById('background2');
 
-        }); 
+        function changeBackgroundImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            const nextImage = images[currentIndex];
+
+            if (background1.classList.contains('show')) {
+                background2.style.backgroundImage = nextImage;
+                background2.classList.add('show');
+                background1.classList.remove('show');
+            } else {
+                background1.style.backgroundImage = nextImage;
+                background1.classList.add('show');
+                background2.classList.remove('show');
+            }
+        }
+
+        // Change background image every 3 seconds
+        setInterval(changeBackgroundImage, 3000);
     </script>
 </body>
-
 </html>
+
+
+

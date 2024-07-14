@@ -315,8 +315,15 @@
                                 }
                             });
 
-                        }).fail(function () {
-                            console.error("Failed to get username for " + ip);
+                        }).fail(function (jqXHR) {
+                            if (jqXHR.status === 404) {
+                                console.error("No username found for " + ip);
+
+                                // Disable the input box with class "select-device" that has the value of the IP address
+                                alert("Device with ip address " + ip + " does not have a username set. Please configure in settings.")
+
+                                // Handle any additional actions for 404 status if needed
+                            }
 
                             // Remove the grey out and the scanning message when the last IP is processed
                             if (index === selectedIps.length - 1) {
@@ -326,6 +333,7 @@
 
                     }, index * 1000); // Adding a delay of 1 second between each request for better visualization
                 });
+
             });
 
             $(document).on("click", ".ipaddr", function () {
