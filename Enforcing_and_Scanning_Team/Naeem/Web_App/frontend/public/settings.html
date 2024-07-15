@@ -43,18 +43,6 @@
         color: #babbbc !important;
     }
 
-    .btn-facebook {
-        border-color: rgba(0, 0, 0, 0);
-        background: #3B5998;
-        color: #fff;
-    }
-
-    .btn-instagram {
-        border-color: rgba(0, 0, 0, 0);
-        background: #000;
-        color: #fff;
-    }
-
     .card {
         background-clip: padding-box;
         box-shadow: 0 1px 4px rgba(24, 28, 33, 0.012);
@@ -164,8 +152,8 @@
                         <a class="list-group-item active" data-toggle="tab" href="#profile">General</a>
                         <a class="list-group-item" data-toggle="tab" href="#changePassword">Change password</a>
                         <a class="list-group-item" data-toggle="tab" href="#networkSettings">Network</a>
-                        <a class="list-group-item" data-toggle="tab" href="#credentialSettings">Windows Machines
-                            Usernames</a>
+                        <!-- <a class="list-group-item" data-toggle="tab" href="#credentialSettings">Windows Machines -->
+                        <!-- Usernames</a> -->
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -213,12 +201,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="credentialSettings">
+                        <!-- <div class="tab-pane fade" id="credentialSettings">
                             <div class="panel-body pb-2">
                                 <div id="userList" class="form-group">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -260,87 +248,42 @@
                             });
                         }
                     }
-                });
+                    selectedIps.forEach(function (ip, index) {
+                        setTimeout(function () {
+                            // Directly make the policy-scan request with the IP address
+                            var scanSettings = {
+                                "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ip,
+                                "method": "GET",
+                                "timeout": 0,
+                            };
 
-                // Function to make AJAX call for each device IP
-                function fetchUserDetails(ip) {
-                    var settings = {
-                        "url": "http://192.168.126.148:3000/sshUser?ipaddress=" + ip,
-                        "method": "GET",
-                        "timeout": 0,
-                    };
+                            $.ajax(scanSettings).done(function (scanResponse) {
+                                console.log(scanResponse);
+                                var scanid = scanResponse['insertId'];
+                                var createdAt = scanResponse['createdAt'];
 
-                    $.ajax(settings).done(function (response) {
-                        var userListDiv = $('#userList');
-                        response.forEach(function (user) {
-                            var userGroup = $('<div class="form-group"></div>');
+                                // Handle the response as needed
+                                $('tr[data-ip="' + ip + '"]').addClass('scan-success');
 
-                            // IP Address label and input
-                            userGroup.append('<label class="form-label">IP Address: ' + user.ipaddress + '</label>');
+                                // Update the lastscan column for the corresponding IP
+                                $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
+                                $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
+                                if (index === selectedIps.length - 1) {
+                                    $('#result').removeClass('grayed-out');
+                                }
+                            }).fail(function () {
+                                console.error("Failed to scan " + ip);
 
-                            // Text input for username
-                            var input = $('<input type="text" class="form-control" value="' + user.username + '">');
-                            userGroup.append(input);
-
-                            // Button to modify username
-                            var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
-                            modifyButton.on('click', function () {
-                                var newUsername = input.val();
-                                var initialUsername = user.username;
-
-                                if (newUsername) {
-                                    var method = initialUsername ? "PUT" : "POST";
-
-                                    // Send the new username to your server to update the user info
-                                    $.ajax({
-                                        url: 'http://192.168.126.148:3000/sshUser',
-                                        method: method,
-                                        data: { ipaddress: user.ipaddress, username: newUsername },
-                                        success: function () {
-                                            alert('Username for ' + user.ipaddress + ' changed to ' + newUsername);
-                                        }
-                                    });
+                                // Remove the grey out and the scanning message when the last IP is processed
+                                if (index === selectedIps.length - 1) {
+                                    $('#result').removeClass('grayed-out');
                                 }
                             });
-                            userGroup.append(modifyButton);
 
-                            userListDiv.append(userGroup);
-                        });
-                    }).fail(function (jqXHR) {
-                        if (jqXHR.status === 404) {
-                            // Handle case where no user was found
-                            var userListDiv = $('#userList');
-                            var userGroup = $('<div class="form-group"></div>');
-
-                            // IP Address label and input
-                            userGroup.append('<label class="form-label">IP Address: ' + ip + '</label>');
-
-                            // Blank input for username
-                            var input = $('<input type="text" class="form-control" value="">');
-                            userGroup.append(input);
-
-                            // Button to modify username
-                            var modifyButton = $('<button class="btn btn-primary mt-2">Modify Username</button>');
-                            modifyButton.on('click', function () {
-                                var newUsername = input.val();
-                                if (newUsername) {
-                                    // Send the new username to your server to add the user info
-                                    $.ajax({
-                                        url: 'http://192.168.126.148:3000/sshUser',
-                                        method: 'POST',
-                                        data: { ipaddress: ip, username: newUsername },
-                                        success: function () {
-                                            alert('Username for ' + ip + ' changed to ' + newUsername);
-                                        }
-                                    });
-                                }
-                            });
-                            userGroup.append(modifyButton);
-
-                            userListDiv.append(userGroup);
-                        }
+                        }, index * 1000); // Adding a delay of 1 second between each request for better visualization
                     });
-                }
+
+                });
 
                 // Iterate over each device and make an AJAX call for each IP
                 devices.forEach(function (device) {
