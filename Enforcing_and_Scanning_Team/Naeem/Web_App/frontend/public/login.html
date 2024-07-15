@@ -85,7 +85,7 @@
                 var data = "{\"username\":\"" + username + "\", \"password\":\"" + pwd + "\"}";
                 console.log(data);
                 $.ajax({
-                    url: 'http://192.168.126.148:3000/user/login',
+                    url: 'https://192.168.126.148:3000/user/login',
                     type: 'POST',
                     data: data,
                     contentType: "application/json; charset=utf-8",
@@ -94,7 +94,7 @@
                         if (data != null) {
                             localStorage.setItem('token', data.token);
                             localStorage.setItem('userInfo', data.UserData);
-                            window.location.assign("http://localhost:3001/home.html");
+                            window.location.assign("https://localhost:3001/home.html");
                         } else {
                             console.log("Error");
                         }

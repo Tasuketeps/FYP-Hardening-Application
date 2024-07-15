@@ -43,7 +43,7 @@
                     </li>
                     <li id="profileNavItem" style="display: none;">
                         <a href="profile.html">
-                            <img src="http://localhost:3000/image/pic.jpg" class="rounded-circle" id="profilePic"
+                            <img src="https://localhost:3000/image/pic.jpg" class="rounded-circle" id="profilePic"
                                 alt="Profile" height="50px">
                         </a>
                         <!-- Dropdown menu for "My Profile" with "Log Out" option -->
@@ -63,7 +63,7 @@
         <div class="col-lg-4">
             <div class="profile-container">
                 <div class="card">
-                    <img src="http://localhost:3000/image/pic.jpg" id="profilePicCard" alt="Profile" style="width:100%">
+                    <img src="https://localhost:3000/image/pic.jpg" id="profilePicCard" alt="Profile" style="width:100%">
                 </div>
             </div>
         </div>
@@ -96,11 +96,11 @@
         </div>
     </div>
     <script>
-        const baseUrl = "http://localhost:3000";
+        const baseUrl = "https://localhost:3000";
         const token = localStorage.getItem("token");
 
         if (token === null) {
-            window.location.assign("http://localhost:3001/login.html");;
+            window.location.assign("https://localhost:3001/login.html");;
         } else {
             var userData = localStorage.getItem('userInfo');
             var userJsonData = JSON.parse(userData);
@@ -127,7 +127,7 @@
                     var data = JSON.stringify({ userid: id, email: tmpEmail, password: tmpPassword, username: tmpUName });
                     $.ajax({
                         headers: { 'authorization': 'Bearer ' + tmpToken },
-                        url: 'http://localhost:3000/user',
+                        url: 'https://localhost:3000/user',
                         type: 'PUT',
                         data: data,
                         contentType: "application/json; charset=utf-8",
@@ -154,7 +154,7 @@
                     var formData = new FormData();
                     formData.append('', pfpInput);
                     $.ajax({
-                        url: 'http://localhost:3000/user/image/' + id,
+                        url: 'https://localhost:3000/user/image/' + id,
                         type: 'POST',
                         data: formData,
                         contentType: false, // Important: Don't set content type
@@ -242,7 +242,7 @@
                     if (confirmLogout) {
                         localStorage.removeItem('token');
                         localStorage.removeItem('userInfo');
-                        window.location.assign("http://localhost:3001");
+                        window.location.assign("https://localhost:3001");
                     } else {
                         event.preventDefault();
                         return;
@@ -262,12 +262,12 @@
         var pfp_name = userJsonData[0].profile_pic_name;
         if (pfp_name !== null && pfp_name !== "") {
             // Code to execute when pfp_name is not null and not empty
-            document.getElementById("profilePicCard").src = "http://localhost:3000/image/user_profile_pictures/" + pfp_name;
-            document.getElementById("profilePic").src = "http://localhost:3000/image/user_profile_pictures/" + pfp_name;
+            document.getElementById("profilePicCard").src = "https://localhost:3000/image/user_profile_pictures/" + pfp_name;
+            document.getElementById("profilePic").src = "https://localhost:3000/image/user_profile_pictures/" + pfp_name;
         } else {
             // Code to execute when pfp_name is null or empty
-            document.getElementById("profilePicCard").src = "http://localhost:3000/image/pic.jpg";
-            document.getElementById("profilePic").src = "http://localhost:3000/image/pic.jpg";
+            document.getElementById("profilePicCard").src = "https://localhost:3000/image/pic.jpg";
+            document.getElementById("profilePic").src = "https://localhost:3000/image/pic.jpg";
         }
 
         $('#welcome-header').append('<p class="welcome">Welcome, ' + username + '.</p>');

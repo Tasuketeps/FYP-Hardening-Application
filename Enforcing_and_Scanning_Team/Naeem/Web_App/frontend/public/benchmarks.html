@@ -70,7 +70,7 @@
             let file = fileInput.files[0];
             formData.append('pdf_file', file);
             $.ajax({
-                url: 'http://192.168.126.148:3000/uploadBenchmark', // Change this to your server endpoint
+                url: 'https://192.168.126.148:3000/uploadBenchmark', // Change this to your server endpoint
                 type: 'POST',
                 data: formData,
                 processData: false,

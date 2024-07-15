@@ -124,7 +124,7 @@
 
                 var selectedIp = $(this).val();
                 var settings = {
-                    "url": "http://192.168.126.148:3000/checkPolicy?ipaddr=" + selectedIp,
+                    "url": "https://192.168.126.148:3000/checkPolicy?ipaddr=" + selectedIp,
                     "method": "GET",
                     "timeout": 0,
                 };
@@ -146,7 +146,7 @@
 
 
             var settings = {
-                "url": "http://192.168.126.148:3000/allBaseline",
+                "url": "https://192.168.126.148:3000/allBaseline",
                 "method": "GET",
                 "timeout": 0,
             };
@@ -179,7 +179,7 @@
                 var devicePolicy = sessionStorage.getItem('devicePolicyFileName');
                 devicePolicy = JSON.parse(devicePolicy)
                 var settings = {
-                    "url": "http://192.168.126.148:3000/baseline?filename=" + baseline + "&policyFileName=" + devicePolicy + ".csv",
+                    "url": "https://192.168.126.148:3000/baseline?filename=" + baseline + "&policyFileName=" + devicePolicy + ".csv",
                     "method": "GET",
                     "timeout": 0,
                 };
@@ -238,7 +238,7 @@
                 });
                 console.log(csvContent);
                 var settings = {
-                    url: "http://192.168.126.148:3000/updatedPolicy",
+                    url: "https://192.168.126.148:3000/updatedPolicy",
                     method: "POST",
                     timeout: 0,
                     contentType: "text/csv",

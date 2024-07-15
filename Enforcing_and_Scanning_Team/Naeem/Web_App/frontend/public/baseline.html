@@ -80,7 +80,7 @@
     <script>
         $(document).ready(function () {
             var settings = {
-                "url": "http://192.168.126.148:3000/allBenchmarks",
+                "url": "https://192.168.126.148:3000/allBenchmarks",
                 "method": "GET",
                 "timeout": 0,
             };
@@ -94,7 +94,7 @@
             $('#load-benchmark').click(function () {
                 var selectedBenchmark = $('#benchmark-select').val();
                 if (selectedBenchmark !== "Select a benchmark") {
-                    $.get('http://192.168.126.148:3000/benchmark', { filename: selectedBenchmark }, function (data) {
+                    $.get('https://192.168.126.148:3000/benchmark', { filename: selectedBenchmark }, function (data) {
                         // Clear previous table data
                         $('#benchmark-table tbody').empty();
 
@@ -161,7 +161,7 @@
                 }
 
                 var settings = {
-                    url: "http://192.168.126.148:3000/baseline",
+                    url: "https://192.168.126.148:3000/baseline",
                     method: "POST",
                     timeout: 0,
                     contentType: "text/csv",

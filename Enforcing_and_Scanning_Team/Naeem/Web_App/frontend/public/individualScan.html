@@ -64,7 +64,7 @@
             $('#ipaddr').text(ipaddress);
             // Show the loading spinner
             var settings = {
-                "url": "http://192.168.126.148:3000/scanInfo?ipaddr=" + ipaddress,
+                "url": "https://192.168.126.148:3000/scanInfo?ipaddr=" + ipaddress,
                 "method": "GET",
                 "timeout": 0,
             };
@@ -103,7 +103,7 @@
                 $('#loading').hide();
                 $('#result').show();
                 $.ajax({
-                    "url": "http://192.168.126.148:3000/openPolicy?scanid=" + scanid,
+                    "url": "https://192.168.126.148:3000/openPolicy?scanid=" + scanid,
                     "method": "GET",
                     "timeout": 0,
                     success: function (response) {
@@ -148,7 +148,7 @@
 
             $(document).on("click", ".scanPolicy", function () {
                 var settings = {
-                    "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ipaddress,
+                    "url": "https://192.168.126.148:3000/policy-scan?ipaddr=" + ipaddress,
                     "method": "GET",
                     "timeout": 0,
                 };
@@ -156,7 +156,7 @@
                 $(document).on("click", ".scanPolicy", function () {
                     var ipaddress = localStorage.getItem('selectedIp');
                     var settings = {
-                        "url": "http://192.168.126.148:3000/policy-scan?ipaddr=" + ipaddress,
+                        "url": "https://192.168.126.148:3000/policy-scan?ipaddr=" + ipaddress,
                         "method": "GET",
                         "timeout": 0,
                     };
