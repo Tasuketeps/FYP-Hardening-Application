@@ -18,6 +18,7 @@ const user = require("../models/user");
 const scan = require("../models/scan");
 const benchmark = require("../models/benchmark")
 const baseline = require("../models/baseline")
+const logger = require("../scripts/logger")
 
 // import body-parser middleware
 const bodyParser = require("body-parser");
@@ -50,12 +51,92 @@ app.post('/user/login',function(req, res){
 // Register Endpoint
 app.post('/user/register', function (req, res) {
     var { username, email, password } = req.body;
+
+    // Email validation pattern
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Password complexity validation pattern
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+        // Validate email format
+    if (!emailPattern.test(email)) {
+        return res.status(400).json({ field: "email", message: "Invalid Email Format" });
+    }
+
+    // Validate password complexity
+    if (!passwordPattern.test(password)) {
+        return res.status(400).json({ field: "password", message: "Password must be 8 or more characters long, and include at least one number, one special character, one uppercase and one lowercase letter" });
+    }
     var newUser = { username, email, password };
     user.insertUsers(newUser, function (err, result) {
+        if (!err) {
+	    logger.info(`Create new user, User: ${username}, Email: ${email}`);
+            res.status(201).json({ message: "Registration successful!" });
+        } else {
+            console.error("Error inserting user:", err);
+            if (err.code === "ER_DUP_ENTRY") {
+		logger.error(`${err.code} to create new user, User: ${username}, Email: ${email}`)
+                res.status(422).json({ field: "username", message: "Username or Email already exists!" });
+            } else {
+		logger.error(`Unknown error to create new user, User: ${username}, Email: ${email}`)
+                res.status(500).json({ message: "Server error" });
+            }
+        }
+    });
+});
+
+
+// Insert a Windows Username for SSH connection
+app.post('/sshUser', function (req, res) {
+    var ipaddress = req.body.ipaddress;
+    var username = req.body.username;
+    user.insertSshUser(ipaddress,username, function (err, result) {
         if (!err) {
             res.status(201).json({ message: "Registration successful!" });
         } else if (err.code === "ER_DUP_ENTRY") {
             res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Update a Windows Username for SSH connection
+app.put('/sshUser', function (req, res) {
+    var ipaddress = req.body.ipaddress;
+    var username = req.body.username;
+    user.editSshUser(ipaddress,username, function (err, result) {
+        if (!err) {
+            res.status(201).json({ message: "Update successful!" });
+        } else if (err.code === "ER_DUP_ENTRY") {
+            res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Get Windows usernames
+app.get('/sshUsers', function (req, res) {
+    user.getSshUsers(function (err, result) {
+        if (!err) {
+            res.status(201).json(result);
+        } else if (err.code === "ER_DUP_ENTRY") {
+            res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Get Single Windows Username
+app.get('/sshUser', function (req, res) {
+    var ipaddress = req.query.ipaddress;
+    user.getSshUser(ipaddress,function(err, result) {
+        if (!err) {
+            res.status(201).json(result);
+        } else if (err.code === 'NO_USER_FOUND') {
+            res.status(404).json({ error: err.message });
         } else {
             res.status(500).json({ message: "Server error" });
         }
@@ -499,5 +580,10 @@ app.post('/updatedPolicy', (req, res) => {
     });	
 
 });
+
+
+
+
+
 
 module.exports = app

@@ -69,8 +69,97 @@ const user = {
         });
       }
     });
+  },
+insertSshUser: function (ipaddress,username, callback) {
+    var conn = db.getConnection();
+    conn.connect(function (err) {
+      if (err) {
+        console.log(err);
+        return callback(err, null);
+      } else {
+        var sql = 'INSERT INTO ssh_users (ipaddress,username) VALUES (?,?);';
+        conn.query(sql, [ipaddress,username], function (err, result) {
+          conn.end();
+          if (err) {
+            console.log(err);
+            return callback(err, null);
+          } else {
+            return callback(null, result.insertId);
+          }
+        });
+      }
+    });
+  },
+getSshUsers: function (callback) {
+    var conn = db.getConnection();
+    conn.connect(function (err) {
+      if (err) {
+        console.log(err);
+        return callback(err, null);
+      } else {
+        var sql = 'select * from ssh_users;';
+        conn.query(sql,function (err, result) {
+          conn.end();
+          if (err) {
+            console.log(err);
+            return callback(err, null);
+          } else {
+            return callback(null, result);
+          }
+        });
+      }
+    });
+  },
+getSshUser: function (ipaddress,callback) {
+    var conn = db.getConnection();
+    conn.connect(function (err) {
+      if (err) {
+        console.log(err);
+        return callback(err, null);
+      } else {
+        var sql = 'select * from ssh_users where ipaddress = ?';
+        conn.query(sql,[ipaddress],function (err, result) {
+          conn.end();
+          if (err) {
+            console.log(err);
+            return callback(err, null);
+          }
+	 else if (result.length === 0){
+		var noUserError = { code: 'NO_USER_FOUND', message: 'No user found for IP address: ' + ipaddress }
+		return callback(noUserError ,null);
+	}
+	 else {
+            return callback(null, result);
+          }
+        });
+      }
+    });
+  },
+	editSshUser: function (ipaddress,username, callback) {
+    var conn = db.getConnection();
+    conn.connect(function (err) {
+      if (err) {
+        console.log(err);
+        return callback(err, null);
+      } else {
+        var sql = 
+`
+UPDATE ssh_users
+SET username = ?
+where ipaddress = ?;
+`;
+        conn.query(sql, [username,ipaddress], function (err, result) {
+          conn.end();
+          if (err) {
+            console.log(err);
+            return callback(err, null);
+          } else {
+            return callback(null, result);
+          }
+        });
+      }
+    });
   }
-
 }
 
 module.exports = user

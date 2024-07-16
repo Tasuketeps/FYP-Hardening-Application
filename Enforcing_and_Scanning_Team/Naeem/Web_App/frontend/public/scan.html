@@ -274,56 +274,29 @@
                 // Iterate through selected IP addresses and call the specific endpoint
                 selectedIps.forEach(function (ip, index) {
                     setTimeout(function () {
-                        // First, get the username for the IP address
-                        var userSettings = {
-                            "url": "https://192.168.126.148:3000/sshUser?ipaddress=" + ip,
+                        // Directly make the policy-scan request with the IP address
+                        var scanSettings = {
+                            "url": "https://192.168.126.148:3000/policy-scan?ipaddr=" + ip,
                             "method": "GET",
                             "timeout": 0,
                         };
 
-                        $.ajax(userSettings).done(function (userResponse) {
-                            console.log(userResponse);
-                            var username = userResponse[0].username;
+                        $.ajax(scanSettings).done(function (scanResponse) {
+                            console.log(scanResponse);
+                            var scanid = scanResponse['insertId'];
+                            var createdAt = scanResponse['createdAt'];
 
-                            // Now, make the policy-scan request with the IP and username
-                            var scanSettings = {
-                                "url": "https://192.168.126.148:3000/policy-scan?ipaddr=" + ip + "&username=" + username,
-                                "method": "GET",
-                                "timeout": 0,
-                            };
+                            // Handle the response as needed
+                            $('tr[data-ip="' + ip + '"]').addClass('scan-success');
 
-                            $.ajax(scanSettings).done(function (scanResponse) {
-                                console.log(scanResponse);
-                                var scanid = scanResponse['insertId'];
-                                var createdAt = scanResponse['createdAt'];
-
-                                // Handle the response as needed
-                                $('tr[data-ip="' + ip + '"]').addClass('scan-success');
-
-                                // Update the lastscan column for the corresponding IP
-                                $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
-                                $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
-                                if (index === selectedIps.length - 1) {
-                                    $('#result').removeClass('grayed-out');
-                                }
-                            }).fail(function () {
-                                console.error("Failed to scan " + ip);
-
-                                // Remove the grey out and the scanning message when the last IP is processed
-                                if (index === selectedIps.length - 1) {
-                                    $('#result').removeClass('grayed-out');
-                                }
-                            });
-
-                        }).fail(function (jqXHR) {
-                            if (jqXHR.status === 404) {
-                                console.error("No username found for " + ip);
-
-                                // Disable the input box with class "select-device" that has the value of the IP address
-                                alert("Device with ip address " + ip + " does not have a username set. Please configure in settings.")
-
-                                // Handle any additional actions for 404 status if needed
+                            // Update the lastscan column for the corresponding IP
+                            $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
+                            $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
+                            if (index === selectedIps.length - 1) {
+                                $('#result').removeClass('grayed-out');
                             }
+                        }).fail(function () {
+                            console.error("Failed to scan " + ip);
 
                             // Remove the grey out and the scanning message when the last IP is processed
                             if (index === selectedIps.length - 1) {
@@ -333,6 +306,7 @@
 
                     }, index * 1000); // Adding a delay of 1 second between each request for better visualization
                 });
+
 
             });
 
