@@ -50,6 +50,7 @@ app.post('/user/login',function(req, res){
 });
 // Register Endpoint
 app.post('/user/register', function (req, res) {
+    
     var { username, email, password } = req.body;
 
     // Email validation pattern
@@ -86,62 +87,62 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 });
 
 
-// Insert a Windows Username for SSH connection
-app.post('/sshUser', function (req, res) {
-    var ipaddress = req.body.ipaddress;
-    var username = req.body.username;
-    user.insertSshUser(ipaddress,username, function (err, result) {
-        if (!err) {
-            res.status(201).json({ message: "Registration successful!" });
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
+// // Insert a Windows Username for SSH connection
+// app.post('/sshUser', function (req, res) {
+//     var ipaddress = req.body.ipaddress;
+//     var username = req.body.username;
+//     user.insertSshUser(ipaddress,username, function (err, result) {
+//         if (!err) {
+//             res.status(201).json({ message: "Registration successful!" });
+//         } else if (err.code === "ER_DUP_ENTRY") {
+//             res.status(422).json({ message: "Username or Email already exists!" });
+//         } else {
+//             res.status(500).json({ message: "Server error" });
+//         }
+//     });
+// });
 
-// Update a Windows Username for SSH connection
-app.put('/sshUser', function (req, res) {
-    var ipaddress = req.body.ipaddress;
-    var username = req.body.username;
-    user.editSshUser(ipaddress,username, function (err, result) {
-        if (!err) {
-            res.status(201).json({ message: "Update successful!" });
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
+// // Update a Windows Username for SSH connection
+// app.put('/sshUser', function (req, res) {
+//     var ipaddress = req.body.ipaddress;
+//     var username = req.body.username;
+//     user.editSshUser(ipaddress,username, function (err, result) {
+//         if (!err) {
+//             res.status(201).json({ message: "Update successful!" });
+//         } else if (err.code === "ER_DUP_ENTRY") {
+//             res.status(422).json({ message: "Username or Email already exists!" });
+//         } else {
+//             res.status(500).json({ message: "Server error" });
+//         }
+//     });
+// });
 
-// Get Windows usernames
-app.get('/sshUsers', function (req, res) {
-    user.getSshUsers(function (err, result) {
-        if (!err) {
-            res.status(201).json(result);
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
+// // Get Windows usernames
+// app.get('/sshUsers', function (req, res) {
+//     user.getSshUsers(function (err, result) {
+//         if (!err) {
+//             res.status(201).json(result);
+//         } else if (err.code === "ER_DUP_ENTRY") {
+//             res.status(422).json({ message: "Username or Email already exists!" });
+//         } else {
+//             res.status(500).json({ message: "Server error" });
+//         }
+//     });
+// });
 
-// Get Single Windows Username
-app.get('/sshUser', function (req, res) {
-    var ipaddress = req.query.ipaddress;
-    user.getSshUser(ipaddress,function(err, result) {
-        if (!err) {
-            res.status(201).json(result);
-        } else if (err.code === 'NO_USER_FOUND') {
-            res.status(404).json({ error: err.message });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
+// // Get Single Windows Username
+// app.get('/sshUser', function (req, res) {
+//     var ipaddress = req.query.ipaddress;
+//     user.getSshUser(ipaddress,function(err, result) {
+//         if (!err) {
+//             res.status(201).json(result);
+//         } else if (err.code === 'NO_USER_FOUND') {
+//             res.status(404).json({ error: err.message });
+//         } else {
+//             res.status(500).json({ message: "Server error" });
+//         }
+//     });
+// });
 
 
 // Scanning script endpoint based on 
