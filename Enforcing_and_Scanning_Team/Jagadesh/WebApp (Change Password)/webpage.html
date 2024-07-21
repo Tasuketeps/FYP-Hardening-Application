@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="./css/webpage.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Webpage Interface</title>
+</head>
+
+
+
+<body>
+
+
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">
+            &#9776;
+        </div>
+        <div class="title">AHS(SP)</div>
+        <div class="logout-container">
+            <i class="fas fa-sign-out-alt" onclick="toggleLogoutMenu()"></i>
+            <!-- Use fas fa-sign-out for logout icon -->
+            <div class="logout-menu" id="logoutMenu">
+                <a href="javascript:void(0);" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="sidebar" id="sidebar">
+        <div class="menu-icon sidebar-menu-icon" onclick="toggleSidebar()">
+            &#9776;
+        </div>
+        <a href="./webpage.html"><i class="fas fa-chalkboard"></i> Main Board</a>
+        <a href="./sidebar/register.html"><i class="fas fa-user"></i> Register User</a>
+        <a href="#"><i class="fas fa-qrcode"></i> Scan Policies</a>
+        <a href="#"><i class="fas fa-tools"></i> Enforce Policies</a>
+        <a href="./sidebar/settings.html"><i class="fas fa-cog"></i> Settings</a>
+        
+    </div>
+   
+
+
+
+
+    <div class="content">
+        <h1>Welcome to our AHS System</h1>
+        <div class="paragraph">
+            <p>Our Automated Hardening System streamlines security management by automating the implementation of robust security policies and configurations. This ensures enhanced protection against cyber threats while reducing manual effort and human error. With an intuitive interface, users can effortlessly scan, enforce, and monitor compliance with industry standards such as CIS Benchmarks.</p>
+            <br>
+            <br>
+            <p>Explore the features and functionalities of our Automated Hardening System (AHS) designed to enhance your system's security and efficiency.</p>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="container">
+        <div class="header">
+            <h1>Main Components</h1>
+            <p>Here are our main components for our Automated Hardening System</p>
+        </div>
+    
+        <div class="grid-container">
+            <div class="section">
+                <div class="card">
+                    <div class="front">
+                        <h2>Scanning Mechanism</h2>
+                        <img src="./images/Scanning.jpg" alt="Scanning">
+                    </div>
+                    <div class="back">
+                        <p>Our scanning mechanism efficiently extracts 70% of the policies specified in the CIS Benchmark for Windows 11 Enterprise, ensuring comprehensive coverage of security standards.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="card">
+                    <div class="front">
+                        <h2>Enforcing Hardening</h2>
+                        <img src="./images/enforcing.jpeg" alt="Enforcing">
+                    </div>
+                    <div class="back">
+                        <p>Our Enforcing Mechanism guarantees up to 70% enforcement, ensuring full implementation of 35 policies. Enforcing occurs automatically upon user action, leveraging the recommended settings post-system policy scan."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="card">
+                    <div class="front">
+                        <h2>Web Application</h2>
+                        <img src="./images/WebApp.png" alt="WebApp">
+                    </div>
+                    <div class="back">
+                        <p>We've developed an web application tailored for our Automated Hardening System, streamlining security enhancements. This application simplifies policy enforcement and system protection, ensuring robust defense measures.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
+    <div class="container">
+        <div class="header">
+            <h1>System Overview</h1>
+            <p>Here is a flowchart of our System's Scanning Mechanism</p>
+        </div>
+
+    <div class="section">
+        <div class="description">
+            <h2>Scanning Mechanism</h2>
+            <p>Shown below is an Overivew flowchart of how our Scanning Mechanism works</p>
+        </div>
+            <div class="image-container">
+                <img src="./images/ScanningOverview.png" alt="Scanning">
+
+        <div class="section">
+            <div class="description">
+                <h2>Enforcing Mechanism</h2>
+                <p>Shown below is an overview flowchart of how our Enforcing Mechanism works</p>
+            </div>
+            <div class="image-container">
+                <img src="./images/EnforcingOverview.png" alt="Enforcing">
+
+            </div>
+        </div>
+    </div>
+ </div>
+
+
+
+
+    <div class="ending">
+        <p>Through using our Automated Hardening System Application, you can benefit more by efficiently safeguarding your systems against evolving cyber threats, reducing operational costs associated with manual security configurations, and ensuring compliance with industry standards like CIS Benchmarks. Feel free to navigate this web application and experience streamlined security management firsthand.</p>
+        <br>
+        <p>For any doubts or queries, do not hesitate to contact our team !</p>
+        <br>
+        <br>
+        <p class="flex-container">
+            <span>Email: support@ahsSP.com</span>
+            <span>|</span>
+            <span>Contact: +123456789</span>
+        </p>
+        
+        <style>
+            .flex-container {
+                display: flex;
+                gap: 10px; /* Adjust the value as needed */
+                margin-left: 325px
+            }
+        </style>
+    </div>
+
+
+       
+
+
+
+
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+        }
+
+        function toggleLogoutMenu() {
+            var logoutMenu = document.getElementById("logoutMenu");
+            logoutMenu.classList.toggle("active");
+        }
+
+        function logout() {
+            window.location.href = "dashboard.html";
+        }
+
+        // Adjusted event handling to ensure logout menu is properly toggled
+        document.addEventListener("click", function(event) {
+            var logoutIcon = document.querySelector(".logout-container .fas.fa-sign-out-alt");
+            var logoutMenu = document.getElementById("logoutMenu");
+
+            if (event.target !== logoutIcon && !logoutMenu.contains(event.target)) {
+                logoutMenu.classList.remove("active");
+            }
+        });
+    </script>
+
+
+
+</body>
+</html>
