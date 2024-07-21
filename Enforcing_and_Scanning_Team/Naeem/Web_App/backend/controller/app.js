@@ -7,10 +7,11 @@ const app = express();
 var verifyToken = require('../auth/verifyToken.js');
 const cors = require('cors');
 const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv');
-
+const axios = require('axios');
 app.options('*',cors());
 app.use(cors());
 
@@ -19,7 +20,7 @@ const scan = require("../models/scan");
 const benchmark = require("../models/benchmark")
 const baseline = require("../models/baseline")
 const logger = require("../scripts/logger")
-
+var verifyToken = require('../auth/verifyToken');
 // import body-parser middleware
 const bodyParser = require("body-parser");
 
@@ -31,7 +32,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Login Endpoint 
-app.post('/user/login',function(req, res){
+app.post('/user/loginOriginal',function(req, res){
   var username = req.body.username;
   var password = req.body.password;
   user.loginUser(username, password, function(err, token, result){
@@ -48,9 +49,55 @@ app.post('/user/login',function(req, res){
       }
   }); 
 });
+app.post('/user/login', async (req, res) => {
+    const secretKey = '6LeXsRIqAAAAAN313r0BJx4lMOLdvK926Ny1hUDC';
+    const userKey = req.body.captchaToken;
+    console.log(userKey);
+    try {
+        const verificationURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${userKey}`;
+        const { data } = await axios.post(verificationURL);
+        if (data.success) {
+            // reCAPTCHA verification successful
+            const { username, password } = req.body;
+            user.loginUser(username, password, function (err, token, result) {
+                if (!err) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    delete result[0]['password'];//clear the password in json data, do not send back to client
+                    console.log(result[0].username + " logged in");
+                    res.json({ success: true, UserData: JSON.stringify(result), token: token, status: 'You are successfully logged in!' });
+                } else {
+                    res.status(500);
+                    res.send("Error Code: " + err.statusCode);
+                }
+            });
+        } else {
+            // reCAPTCHA verification failed
+            res.status(500).send('reCAPTCHA verification failed!')
+        }
+    } catch (error) {
+        console.error('Error during reCAPTCHA verification:', error.message);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+});
+
+app.post('/verifyUser', verifyToken, function (req, res) {
+    if (req.type === 'admin') {
+        res.status(200).json({ type: 'admin' }); // Admin role
+    } else if (req.type === 'user') {
+        res.status(200).json({ type: 'user' }); // Regular user role
+    } else {
+        res.sendStatus(403);
+    }
+});
+
+
 // Register Endpoint
-app.post('/user/register', function (req, res) {
-    
+app.post('/user/register', verifyToken, function (req, res) {
+    if (req.type != 'admin') {
+	return res.status(403).json({auth: 'false', message: 'Not authorized!'});
+}    
     var { username, email, password } = req.body;
 
     // Email validation pattern
@@ -86,66 +133,91 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     });
 });
 
+// Change password endpoint
 
-// // Insert a Windows Username for SSH connection
-// app.post('/sshUser', function (req, res) {
-//     var ipaddress = req.body.ipaddress;
-//     var username = req.body.username;
-//     user.insertSshUser(ipaddress,username, function (err, result) {
-//         if (!err) {
-//             res.status(201).json({ message: "Registration successful!" });
-//         } else if (err.code === "ER_DUP_ENTRY") {
-//             res.status(422).json({ message: "Username or Email already exists!" });
-//         } else {
-//             res.status(500).json({ message: "Server error" });
-//         }
-//     });
-// });
+app.post('/user/updateUserPassword', verifyToken, (req, res) => {
+    const { currentPassword, newPassword, repeatPassword } = req.body;
+    const userid = req.userid;
 
-// // Update a Windows Username for SSH connection
-// app.put('/sshUser', function (req, res) {
-//     var ipaddress = req.body.ipaddress;
-//     var username = req.body.username;
-//     user.editSshUser(ipaddress,username, function (err, result) {
-//         if (!err) {
-//             res.status(201).json({ message: "Update successful!" });
-//         } else if (err.code === "ER_DUP_ENTRY") {
-//             res.status(422).json({ message: "Username or Email already exists!" });
-//         } else {
-//             res.status(500).json({ message: "Server error" });
-//         }
-//     });
-// });
+    console.log(userid)
 
-// // Get Windows usernames
-// app.get('/sshUsers', function (req, res) {
-//     user.getSshUsers(function (err, result) {
-//         if (!err) {
-//             res.status(201).json(result);
-//         } else if (err.code === "ER_DUP_ENTRY") {
-//             res.status(422).json({ message: "Username or Email already exists!" });
-//         } else {
-//             res.status(500).json({ message: "Server error" });
-//         }
-//     });
-// });
+    if (!userid) {
+        return res.status(403).json({ error: 'User not authenticated.' });
+    }
 
-// // Get Single Windows Username
-// app.get('/sshUser', function (req, res) {
-//     var ipaddress = req.query.ipaddress;
-//     user.getSshUser(ipaddress,function(err, result) {
-//         if (!err) {
-//             res.status(201).json(result);
-//         } else if (err.code === 'NO_USER_FOUND') {
-//             res.status(404).json({ error: err.message });
-//         } else {
-//             res.status(500).json({ message: "Server error" });
-//         }
-//     });
-// });
+    user.updateUser(currentPassword, newPassword, repeatPassword, userid, function(err, result) {
+        if (err) {
+	    logger.error(`User with userid: ${userid} FAILED to change password.`)
+            console.error('Failed to update password:', err.message);
+            return res.status(500).json({ error: err.message });
+        } else {
+	    logger.info(`User with userid: ${userid} changed password.`)
+            console.log('Password updated successfully.');
+            return res.status(200).json({ message: 'Password updated successfully.' });
+        }
+    });
+});
 
 
-// Scanning script endpoint based on 
+// Insert a Windows Username for SSH connection
+app.post('/sshUser', function (req, res) {
+    var ipaddress = req.body.ipaddress;
+    var username = req.body.username;
+    user.insertSshUser(ipaddress,username, function (err, result) {
+        if (!err) {
+            res.status(201).json({ message: "Registration successful!" });
+        } else if (err.code === "ER_DUP_ENTRY") {
+            res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Update a Windows Username for SSH connection
+app.put('/sshUser', function (req, res) {
+    var ipaddress = req.body.ipaddress;
+    var username = req.body.username;
+    user.editSshUser(ipaddress,username, function (err, result) {
+        if (!err) {
+            res.status(201).json({ message: "Update successful!" });
+        } else if (err.code === "ER_DUP_ENTRY") {
+            res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Get Windows usernames
+app.get('/sshUsers', function (req, res) {
+    user.getSshUsers(function (err, result) {
+        if (!err) {
+            res.status(201).json(result);
+        } else if (err.code === "ER_DUP_ENTRY") {
+            res.status(422).json({ message: "Username or Email already exists!" });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+// Get Single Windows Username
+app.get('/sshUser', function (req, res) {
+    var ipaddress = req.query.ipaddress;
+    user.getSshUser(ipaddress,function(err, result) {
+        if (!err) {
+            res.status(201).json(result);
+        } else if (err.code === 'NO_USER_FOUND') {
+            res.status(404).json({ error: err.message });
+        } else {
+            res.status(500).json({ message: "Server error" });
+        }
+    });
+});
+
+
+// Scanning policies script endpoint based on 
 app.get('/execute-secedit', (req, res) => {
     exec('sh ../scripts/automate_process.sh', (error, stdout, stderr) => {
         if (error) {
@@ -166,18 +238,18 @@ app.get('/execute-secedit', (req, res) => {
 // Scan for connected devices to the domain network endpoint
 app.get('/scan', (req, res) => {
     ipaddr = req.query.ipaddr;
-    exec('expect scripts/arp_scan.sh ' + ipaddr, (error, stdout, stderr) => {
+    execFile('/usr/sbin/arp-scan', [ipaddr], (error, stdout, stderr) => {
         if (error) {
-            console.error(`Error executing script: ${error}`);
+        //    console.error(`Error executing script: ${error}`);
             res.status(500).send('Error executing script: ' + error + __dirname);
             return;
         }
         if (stderr) {
-            console.error(`Script stderr: ${stderr}`);
+        //    console.error(`Script stderr: ${stderr}`);
             res.status(500).send('Script execution error: ' + stderr);
             return;
         }
-        console.log(`Script stdout: ${stdout}`);
+        //console.log(`Script stdout: ${stdout}`);
         res.send(`${stdout}`);
     });
 });
@@ -513,7 +585,10 @@ app.get("/baseline", (req, res, next) => {
     });
   });
 
-app.post('/updatedPolicy', (req, res) => {
+app.post('/updatedPolicy', verifyToken, (req, res) => {
+    
+    var userid = req.userid;
+	
     const csvData = req.body;
     const fileName = req.headers['file-name'];
     const ipaddr = req.headers['ip-address'];
@@ -567,16 +642,19 @@ app.post('/updatedPolicy', (req, res) => {
 	var command = `sh ${scriptsPath}/automate_enforcing.sh ${ipaddr} ${fileName}`;
 	    exec(command, (error, stdout, stderr) => {
         if (error) {
+            logger.error(`User with userid: ${userid} FAILED enforcing on ${ipaddr}`);
             console.error(`Error executing script: ${error}`);
             res.status(500).send('Error executing script: ' + error.message);
             return;
         }
         if (stderr) {
+	    logger.error(`User with userid: ${userid} FAILED enforcing on ${ipaddr}`);
             console.error(`Script stderr: ${stderr}`);
             res.status(500).send('Script execution error: ' + stderr);
             return;
         }
         // console.log(`Script stdout: ${stdout}`);
+	logger.info(`User with userid: ${userid} performed enforcing on ${ipaddr}`);
         res.status(200).send(`Script executed successfully: ${stdout}`);
     });	
 

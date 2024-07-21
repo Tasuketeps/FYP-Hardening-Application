@@ -1,0 +1,2 @@
+{"level":"info","message":"User with userid: 1 performed enforcing on 192.168.126.145","service":"user-service","timestamp":"2024-07-21 16:41:29"}
+{"level":"info","message":"Create new user, User: admin1, Email: admin1@gmail.com","service":"user-service","timestamp":"2024-07-21 16:42:21"}

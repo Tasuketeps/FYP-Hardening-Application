@@ -21,7 +21,7 @@ function verifyToken(req, res, next){
             return res.end({auth:false, message:'Not authorized!'});
         }else{
             req.userid=decoded.userid; //decode the userid and store in req for use
-            req.role = decoded.role; //decode the role and store in req for use
+            req.type = decoded.type; //decode the role and store in req for use
             next();
         }
        });

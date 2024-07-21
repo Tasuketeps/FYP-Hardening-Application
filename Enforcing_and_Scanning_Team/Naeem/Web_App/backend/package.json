@@ -9,6 +9,8 @@
   "author": "naeemrafi99.22@ichat.sp.edu.sg",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.2",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "csv": "^6.3.9",

@@ -6,9 +6,9 @@
     "auditLog": "/var/www/myapp/backend/logs/.4687f46119b77aaf0dabe1f458280eeac7012238-audit.json",
     "files": [
         {
-            "date": 1721140424396,
-            "name": "/var/www/myapp/backend/logs/combined-2024-07-16.log",
-            "hash": "289e222428ec6d64b586b90bdde8e12915e613987f816ceadf220b1722f5db4c"
+            "date": 1721579681500,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-21.log",
+            "hash": "86d35a443b6d389260ad5ec9a1baa61d611bcd2b647e1cebe3cb20015b6ff67c"
         }
     ],
     "hashType": "sha256"
