@@ -1,0 +1,139 @@
+@charset "utf-8";
+
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/AHS-7.avif');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+}
+
+
+
+
+.navbar {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color: darkgreen;
+    padding: 8px 20px;
+    position: relative;
+}
+
+.menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+.title {
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+
+
+
+
+
+
+.logout-container {
+    position: absolute;
+    right: 25px;
+    top: 14px;
+} 
+
+.logout-container .fas.fa-sign-out-alt {
+    font-size: 24px; 
+    color: white; 
+    cursor: pointer; 
+    transition: color 0.3s ease; 
+} 
+
+.logout-container .fas.fa-sign-out-alt:hover {
+    color: #990000; 
+}  
+
+.logout-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.logout-menu a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.logout-menu a:hover {
+    background-color: #ddd;
+}
+
+.logout-menu.active {
+    display: block;
+}
+
+
+
+
+
+
+.sidebar {
+    height: 100%;
+    width: 300px; /* Set a fixed width for the sidebar */
+    position: fixed; /* Use fixed position */
+    top: 0;
+    left: -300px; /* Initially hide the sidebar off the screen */
+    background-color: grey;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1;
+   
+}
+
+.sidebar.active {
+    left: 0; /* Slide in the sidebar to overlap the content */
+    
+}
+
+.sidebar a {
+    padding: 20px 15px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a i {
+    margin-right: 8px; /* Adjust the spacing as needed */
+}
+
+.sidebar a:hover {
+    background-color: #575757;
+}
+
+.sidebar .sidebar-menu-icon {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    
+}
