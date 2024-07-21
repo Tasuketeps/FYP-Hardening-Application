@@ -1,6 +1,0 @@
-Policy name,Value,Recommended Value,ConstantName
-Enforce password history,24,24 or more password(s),PasswordHistorySize
-Maximum password age,365,"365 or fewer days, but not 0",MaximumPasswordAge
-Minimum password age,1,1 or more day(s),MinimumPasswordAge
-Minimum password length,14,14 or more character(s),MinimumPasswordLength
-Password must meet complexity requirements,1,Enabled,PasswordComplexity
