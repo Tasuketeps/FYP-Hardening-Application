@@ -134,7 +134,7 @@
                 $(document).on("click", "#scan", function () {
                     var ipAddress = sessionStorage.getItem('ipAddress');
                     ipAddress = JSON.parse(ipAddress);
-                    console.log(ipAddress);
+                    // console.log(ipAddress);
                     performScan(ipAddress);
                 });
 
@@ -143,7 +143,7 @@
             $(document).on("click", "#scan", function () {
                 var ipAddress = sessionStorage.getItem('ipAddress');
                 ipAddress = JSON.parse(ipAddress);
-                console.log(ipAddress);
+                // console.log(ipAddress);
                 performScan(ipAddress)
             });
 
@@ -158,7 +158,8 @@
                 $('#result').hide();
 
                 $.ajax(settings).done(function (response) {
-                    console.log("Full response:", response);
+                    console.log(response)
+                    // console.log("Full response:", response);
                     // Your scan logic here
                     // After getting the scan results, store them in sessionStorage
                     sessionStorage.setItem('scanData', JSON.stringify(response));
@@ -179,7 +180,7 @@
                 var devices = [];
 
                 lines.forEach(function (line) {
-                    console.log("Processing line:", line);
+                    // console.log("Processing line:", line);
 
                     // Trim the line to remove any leading or trailing whitespace
                     line = line.trim();
@@ -188,7 +189,7 @@
                     var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
 
                     if (match) {
-                        console.log("Matched line:", match);
+                        // console.log("Matched line:", match);
                         var ipAddress = match[1];
                         var lastOctet = parseInt(ipAddress.split('.').pop());
 
@@ -282,7 +283,7 @@
                         };
 
                         $.ajax(scanSettings).done(function (scanResponse) {
-                            console.log(scanResponse);
+                            // console.log(scanResponse);
                             var scanid = scanResponse['insertId'];
                             var createdAt = scanResponse['createdAt'];
 
@@ -296,7 +297,7 @@
                                 $('#result').removeClass('grayed-out');
                             }
                         }).fail(function () {
-                            console.error("Failed to scan " + ip);
+                            // console.error("Failed to scan " + ip);
 
                             // Remove the grey out and the scanning message when the last IP is processed
                             if (index === selectedIps.length - 1) {
@@ -346,7 +347,7 @@
 
             $('.select-device').each(function () {
                 selectedIps.push($(this).val());
-                console.log(selectedIps);
+                // console.log(selectedIps);
             });
 
             // Iterate through selected IP addresses with a delay between each call
@@ -357,7 +358,7 @@
                         "method": "GET",
                         "timeout": 0,
                         success: function (response) {
-                            console.log("Latest scan for " + ip + ":", response);
+                            // console.log("Latest scan for " + ip + ":", response);
                             var lastScanTime = response[0].created_at;
                             var scanID = response[0].scanid;
                             $('tr[data-ip="' + ip + '"] .lastScan').text(lastScanTime); // Update the lastscan column

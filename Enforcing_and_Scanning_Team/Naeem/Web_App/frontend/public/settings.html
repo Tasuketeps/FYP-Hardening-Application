@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="./css/login.css" rel="stylesheet">
+    <link href="../css/sidebar.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -13,7 +12,20 @@
     <title>Settings</title>
 
 </head>
+
 <style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+        background-image: url('../images/AHS-7.avif');
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        min-height: 100vh;
+    }
+
     .ui-w-80 {
         width: 80px !important;
         height: auto;
@@ -107,38 +119,123 @@
         padding: 0.85rem 1.5rem;
         border-color: rgba(24, 28, 33, 0.03) !important;
     }
+
+    /* New styles for the panel content */
+    .panel-heading {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .panel-body {
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: 700;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 4px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .tab-content {
+        border: 1px solid #ddd;
+        border-top: none;
+        padding: 15px;
+        background-color: #fff;
+    }
+
+    .list-group-item {
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        margin-bottom: 5px;
+    }
+
+    .list-group-item.active {
+        background-color: #26B4FF !important;
+        color: #fff !important;
+    }
+
+    .btn-primary {
+        background-color: #26B4FF;
+        border-color: #26B4FF;
+    }
+
+    .btn-default {
+        background-color: #f5f5f5;
+        border-color: #ddd;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .mt-3 {
+        margin-top: 1rem !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .py-3 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .font-weight-bold {
+        font-weight: 700 !important;
+    }
 </style>
+</head>
 
 <body>
 
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#navbar-collapse" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="scan.html">Scan Network</a></li>
-                    <li><a href="scanDevice.html">Scan Device</a></li>
-                    <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
-                    <li><a href="register.html">Add users</a></li>
-                    <li><a href="baseline.html">Configure Baseline</a></li>
-                    <li><a href="settings.html">Settings</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" id="Logout">Logout</a></li>
-                </ul>
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">
+            &#9776;
+        </div>
+        <div class="title">AHS(SP)</div>
+        <div class="logout-container">
+            <i class="fas fa-sign-out-alt" onclick="toggleLogoutMenu()"></i>
+            <div class="logout-menu" id="logoutMenu">
+                <a href="javascript:void(0);" onclick="logout()">Logout</a>
             </div>
         </div>
-    </nav>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="menu-icon sidebar-menu-icon" onclick="toggleSidebar()">
+            &#9776;
+        </div>
+        <a href="dashboard.html"><i class="fas fa-chalkboard"></i> Main Board</a>
+        <a href="register.html"><i class="fas fa-user"></i> Register User</a>
+        <a href="scan.html"><i class="fas fa-qrcode"></i> Scan Network</a>
+        <a href="scanDevice.html"><i class="fas fa-barcode"></i> Scan Device</a>
+        <a href="baseline.html"><i class="fas fa-tools"></i> Configure Baseline</a>
+        <a href="benchmarks.html"><i class="fas fa-book"></i> Upload CIS benchmarks</a>
+        <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+        
+    </div>
+
+
+
+
+
     <div class="container light-style flex-grow-1 container-p-y">
 
         <h4 class="font-weight-bold py-3 mb-4">
@@ -146,21 +243,24 @@
         </h4>
 
         <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5 class="panel-title">User Settings</h5>
+            </div>
             <div class="row">
                 <div class="col-md-3">
                     <div class="list-group account-settings-links">
                         <a class="list-group-item active" data-toggle="tab" href="#profile">General</a>
                         <a class="list-group-item" data-toggle="tab" href="#changePassword">Change password</a>
                         <a class="list-group-item" data-toggle="tab" href="#networkSettings">Network</a>
-                        <!-- <a class="list-group-item" data-toggle="tab" href="#credentialSettings">Windows Machines -->
-                        <!-- Usernames</a> -->
                     </div>
                 </div>
+
+
+
                 <div class="col-md-9">
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="profile">
                             <hr class="border-light m-0">
-
                             <div class="panel-body">
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
@@ -171,28 +271,30 @@
                                     <input type="text" class="form-control mb-1">
                                 </div>
                             </div>
-
                         </div>
+
+
+
+
+
                         <div class="tab-pane fade" id="changePassword">
                             <div class="panel-body pb-2">
-
                                 <div class="form-group">
                                     <label class="form-label">Current password</label>
-                                    <input type="password" class="form-control">
+                                    <input id="currentPassword" type="password" class="form-control">
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">New password</label>
-                                    <input type="password" class="form-control">
+                                    <input id="newPassword" type="password" class="form-control">
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Repeat new password</label>
-                                    <input type="password" class="form-control">
+                                    <input id="repeatPassword" type="password" class="form-control">
                                 </div>
-
+                                <div id="errorMessages"></div> <!-- Container for error messages -->
                             </div>
                         </div>
+
                         <div class="tab-pane fade" id="networkSettings">
                             <div class="panel-body pb-2">
                                 <div class="form-group">
@@ -201,96 +303,103 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="tab-pane fade" id="credentialSettings">
-                            <div class="panel-body pb-2">
-                                <div id="userList" class="form-group">
-                                </div>
-                            </div>
-                        </div> -->
+
                     </div>
                 </div>
             </div>
-
             <div class="text-right mt-3">
-                <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                <button id="saveChangesBtn" type="button" class="btn btn-primary">Save changes</button>
                 <button type="button" class="btn btn-default">Cancel</button>
             </div>
-
         </div>
+    </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                var scanData = sessionStorage.getItem('scanData');
-                scanData = JSON.parse(scanData);
-                var resultDiv = $('#result');
-                var lines = scanData.split('\n');
-                var devices = [];
 
-                lines.forEach(function (line) {
-                    console.log("Processing line:", line);
 
-                    // Trim the line to remove any leading or trailing whitespace
-                    line = line.trim();
 
-                    // Regex to match IP address and MAC address followed by manufacturer
-                    var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
 
-                    if (match) {
-                        console.log("Matched line:", match);
-                        var ipAddress = match[1];
-                        var lastOctet = parseInt(ipAddress.split('.').pop());
 
-                        // Filter out IP addresses ending in .1, .2, or .254
-                        if (lastOctet !== 1 && lastOctet !== 2 && lastOctet !== 254) {
-                            devices.push({
-                                ip: match[1]
-                            });
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            // Function to update user password via AJAX
+
+            function updateUserPassword(currentPassword, newPassword, repeatPassword) {
+                var apiEndpoint = 'https://192.168.126.148:3000/user/updateUserPassword';
+                var token = localStorage.getItem('token'); // Retrieve token from localStorage
+
+                var requestData = {
+                    currentPassword: currentPassword,
+                    newPassword: newPassword,
+                    repeatPassword: repeatPassword
+                };
+
+                // Clear previous error messages
+                $('#errorMessages').empty();
+
+                $.ajax({
+                    url: apiEndpoint,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token // Include token in request headers
+                    },
+                    data: JSON.stringify(requestData),
+                    success: function (response) {
+                        console.log('Password updated successfully:', response);
+                        alert('Password updated successfully!');
+                        $('#currentPassword').val('');
+                        $('#newPassword').val('');
+                        $('#repeatPassword').val('');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Failed to update password:', error);
+                        // alert('Failed to update password. Please try again.');
+
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            var errorMessage = xhr.responseJSON.error;
+                            $('#errorMessages').append('<div class="error-message text-danger">' + errorMessage + '</div>');
+                        } else {
+                            $('#errorMessages').append('<div class="error-message text-danger">An unexpected error occurred. Please try again later.</div>');
                         }
                     }
-                    selectedIps.forEach(function (ip, index) {
-                        setTimeout(function () {
-                            // Directly make the policy-scan request with the IP address
-                            var scanSettings = {
-                                "url": "https://192.168.126.148:3000/policy-scan?ipaddr=" + ip,
-                                "method": "GET",
-                                "timeout": 0,
-                            };
-
-                            $.ajax(scanSettings).done(function (scanResponse) {
-                                console.log(scanResponse);
-                                var scanid = scanResponse['insertId'];
-                                var createdAt = scanResponse['createdAt'];
-
-                                // Handle the response as needed
-                                $('tr[data-ip="' + ip + '"]').addClass('scan-success');
-
-                                // Update the lastscan column for the corresponding IP
-                                $('tr[data-ip="' + ip + '"] .scanID').text(scanid);
-                                $('tr[data-ip="' + ip + '"] .lastScan').text(createdAt);
-                                if (index === selectedIps.length - 1) {
-                                    $('#result').removeClass('grayed-out');
-                                }
-                            }).fail(function () {
-                                console.error("Failed to scan " + ip);
-
-                                // Remove the grey out and the scanning message when the last IP is processed
-                                if (index === selectedIps.length - 1) {
-                                    $('#result').removeClass('grayed-out');
-                                }
-                            });
-
-                        }, index * 1000); // Adding a delay of 1 second between each request for better visualization
-                    });
-
                 });
+            }
 
-                // Iterate over each device and make an AJAX call for each IP
-                devices.forEach(function (device) {
-                    fetchUserDetails(device.ip);
-                });
+            $('#saveChangesBtn').click(function () {
+                var currentPassword = $('#currentPassword').val();
+                var newPassword = $('#newPassword').val();
+                var repeatPassword = $('#repeatPassword').val();
+
+                updateUserPassword(currentPassword, newPassword, repeatPassword);
             });
 
 
-        </script>
+
+
+
+
+        });
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+        }
+
+        function toggleLogoutMenu() {
+            var logoutMenu = document.getElementById("logoutMenu");
+            logoutMenu.classList.toggle("active");
+        }
+
+        function logout() {
+            // Redirect to the login page or perform other logout actions
+            window.location.href = "../dashboard.html";
+        }
+
+
+
+
+    </script>
 </body>

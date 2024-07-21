@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </head>
 
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +23,7 @@
     <style>
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-default">
@@ -43,6 +47,7 @@
     </nav>
 
 </body>
+
 </html>
 
 
@@ -52,7 +57,7 @@
     <div class="row justify-content-center">
         <h1>Admin Login Page</h1>
         <div class="login-form">
-            <form action="">
+            <form action="" id="signInForm">
                 <h2 class="text-center">Log in</h2>
                 <div class="form-group">
                     <input type="text" class="form-control" id="username" placeholder="Username" required="required">
@@ -64,6 +69,10 @@
                             <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                         </div>
                     </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <div class="g-recaptcha" data-sitekey="6LeXsRIqAAAAAI8I8cNj6GWjT5olj_vTt9KsL4s4"></div>
+                    <!-- <button type="submit" class="customButton" id="signin">Submit</button> -->
                 </div>
                 <div class="form-group">
                     <input type="checkbox" id="rememberMe">
@@ -80,20 +89,13 @@
     <script>
         $(document).ready(function () {  // $(function () {})
             $("#Login").click(function () {
-                var captchaToken = formData.get("g-recaptcha-response");
                 var username = $('#username').val();
                 var pwd = $('#pwd').val();
-                // let data = { username, password, captchaToken };
-                if (password.length < 0 || username.length < 0) {
-                    alert("Please enter the credentials!")
-                    return false
-                }
-                if (captchaToken.length) {
-                    alert("Please complete the captcha!")
-                    return false
-                }
+                var formData = new FormData(document.getElementById("signInForm"));
+                var captchaToken = formData.get("g-recaptcha-response");
+
+                var data = "{\"username\":\"" + username + "\", \"password\":\"" + pwd + "\", \"captchaToken\":\"" + captchaToken + "\"}";
                 console.log(data);
-                let data = { username, password, captchaToken };
                 $.ajax({
                     url: 'https://192.168.126.148:3000/user/login',
                     type: 'POST',

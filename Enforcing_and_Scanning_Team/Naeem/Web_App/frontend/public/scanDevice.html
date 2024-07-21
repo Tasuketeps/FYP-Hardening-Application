@@ -82,7 +82,7 @@
             var devices = [];
 
             // Parse scan data into an array of objects
-            var lines = scanData.split('\r\n');
+            var lines = scanData.split('\n');
 
             lines.forEach(function (line) {
                 var match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:]+)\s+(.+)$/);
@@ -221,6 +221,7 @@
             });
             $('#generateCSV').on('click', function () {
                 var data = [];
+                const token = localStorage.getItem('token');
                 var devicePolicy = sessionStorage.getItem('devicePolicyFileName');
                 devicePolicy = JSON.parse(devicePolicy)
                 var selectedIp = $('#ipSelect').val();
@@ -245,7 +246,8 @@
                     data: csvContent,
                     headers: {
                         'File-Name': devicePolicy,
-                        'Ip-Address': selectedIp
+                        'Ip-Address': selectedIp,
+                        'Authorization': 'Bearer ' + token
                     }
                 };
 

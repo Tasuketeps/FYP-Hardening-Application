@@ -43,11 +43,119 @@
     }
 
     .error-message {
-            color: red;
-            font-size: 14px;
-            display: none;
-        }
+        color: red;
+        font-size: 14px;
+        display: none;
+    }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.alert("You are not logged in.");
+            window.location.href = "/";
+            return;
+        } else {
+            $.ajax({
+                url: 'https://192.168.126.148:3000/verifyUser',
+                type: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                success: function (data, textStatus, xhr) {
+                    if (xhr.status === 200 && data.type == 'admin') {
+
+                    } else {
+                        window.alert("You are not authorized to access this page.");
+                        window.location.href = "home.html";
+                    }
+                },
+                error: function () {
+                    window.alert("You are not authorized to access this page.");
+                    window.location.href = "home.html";
+                }
+            });
+        }
+        $("#show_hide_password").on('click', function (event) {
+            event.preventDefault();
+            var passwordField = $('#password');
+            var passwordFieldType = passwordField.attr('type');
+            if (passwordFieldType === 'password') {
+                passwordField.attr('type', 'text');
+                $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+        });
+
+        // Registration form submission
+        $("#register").click(function (event) {
+            const token = localStorage.getItem('token');
+            event.preventDefault();
+            var username = $('#username').val();
+            var email = $('#email').val();
+            var password = $('#password').val();
+            var confirmPassword = $('#confirm_password').val();
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                $('#confirm_password').val('');
+                return;
+            }
+
+            var data = {
+                username: username,
+                email: email,
+                password: password
+            };
+
+            $.ajax({
+                headers: { 'Authorization': 'Bearer ' + token },
+                url: 'https://192.168.126.148:3000/user/register',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    if (xhr.status === 201) {
+                        alert("Registration successful!");
+                        window.location.assign("home.html");
+                    } else {
+                        console.log("Unexpected status code: " + xhr.status);
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    if (xhr.status === 422) {
+                        if (xhr.responseJSON.field === "username") {
+                            $('#username-error').text('Username already exists!').show();
+                            $("#username").addClass("error");
+                        } else if (xhr.responseJSON.field === "email") {
+                            $('#email-error').text('Email already exists!').show();
+                            $("#email").addClass("error");
+                        }
+                    }
+                    else if (xhr.status === 400) {
+                        if (xhr.responseJSON.field === "password") {
+                            $('#password-error').text('Not a valid password!').show();
+                            $("#password").addClass("error");
+                        } else if (xhr.responseJSON.field === "email") {
+                            $('#email-error').text('Not a valid email').show();
+                            $("#email").addClass("error");
+                        }
+                    }
+                    else {
+                        alert('Registration failed! Please try again later.');
+                    }
+                }
+            });
+
+
+        });
+    });
+</script>
 
 <body>
 
@@ -95,7 +203,7 @@
                 <div class="input-group" id="show_hide_password">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password"
                         required="required">
-                        
+
                     <div class="input-group-addon">
                         <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                     </div>
@@ -105,91 +213,11 @@
             <div class="form-group">
                 <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password"
                     required="required">
-                
+
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block" id="register">Register</button>
             </div>
         </form>
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#show_hide_password").on('click', function (event) {
-                event.preventDefault();
-                var passwordField = $('#password');
-                var passwordFieldType = passwordField.attr('type');
-                if (passwordFieldType === 'password') {
-                    passwordField.attr('type', 'text');
-                    $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-                } else {
-                    passwordField.attr('type', 'password');
-                    $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-                }
-            });
-
-            // Registration form submission
-            $("#register").click(function (event) {
-                event.preventDefault();
-                var username = $('#username').val();
-                var email = $('#email').val();
-                var password = $('#password').val();
-                var confirmPassword = $('#confirm_password').val();
-
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match!");
-                    $('#confirm_password').val('');
-                    return;
-                }
-
-                var data = {
-                    username: username,
-                    email: email,
-                    password: password
-                };
-
-                $.ajax({
-                    url: 'https://192.168.126.148:3000/user/register',
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (data, textStatus, xhr) {
-                        if (xhr.status === 201) {
-                            alert("Registration successful!");
-                            window.location.assign("home.html");
-                        } else {
-                            console.log("Unexpected status code: " + xhr.status);
-                        }
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        if (xhr.status === 422) {
-                            if (xhr.responseJSON.field === "username") {
-                                $('#username-error').text('Username already exists!').show();
-                                $("#username").addClass("error");
-                            } else if (xhr.responseJSON.field === "email") {
-                                $('#email-error').text('Email already exists!').show();
-                                $("#email").addClass("error");
-                            }
-                        }
-                        else if (xhr.status === 400) {
-                            if (xhr.responseJSON.field === "password") {
-                                $('#password-error').text('Not a valid password!').show();
-                                $("#password").addClass("error");
-                            } else if (xhr.responseJSON.field === "email") {
-                                $('#email-error').text('Not a valid email').show();
-                                $("#email").addClass("error");
-                            }
-                        }
-                        else {
-                            alert('Registration failed! Please try again later.');
-                        }
-                    }
-                });
-
-
-            });
-        });
-    </script>
 </body>

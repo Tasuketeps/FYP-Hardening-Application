@@ -31,7 +31,7 @@
                     <li><a href="scan.html">Scan Network</a></li>
                     <li><a href="scanDevice.html">Scan Device</a></li>
                     <li><a href="benchmarks.html">Upload CIS Benchmark</a></li>
-                    <li><a href="register.html">Add users</a></li>
+                    <li id="adminTool" style="display: none;"><a href="register.html">Add users</a></li>
                     <li><a href="baseline.html">Configure Baseline</a></li>
                     <li><a href="settings.html">Settings</a></li>
                 </ul>
@@ -48,6 +48,30 @@
     <script>
         $(document).ready(function () {  // $(function () {})
             const token = localStorage.getItem("token");
+            if (!token) {
+                window.alert("You are not logged in.");
+                window.location.href = "/";
+                return;
+            } else {
+                $.ajax({
+                    url: 'https://192.168.126.148:3000/verifyUser',
+                    type: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    success: function (data) {
+                        if (data.type === 'admin') {
+                            $('#adminTool').css('display', 'block');
+                        }
+                    },
+                    error: function () {
+                        window.alert("You are not authorized to access this page.");
+                        window.location.href = "/";
+                    }
+                });
+            };
+
 
             $("#Logout").click(function () {
                 const confirmLogout = confirm("Are you sure you want to log out?");
@@ -62,29 +86,29 @@
 
             });
 
-            $('#uploadForm').on('submit', function(e) {
-            $('#loading').show();
-            e.preventDefault();
-            var formData = new FormData(this);
-            let fileInput = document.getElementById('cisFile');
-            let file = fileInput.files[0];
-            formData.append('pdf_file', file);
-            $.ajax({
-                url: 'https://192.168.126.148:3000/uploadBenchmark', // Change this to your server endpoint
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    $('#loading').hide();
-                    $('#uploadStatus').html('<p class="text-success">File uploaded successfully!</p>');
+            $('#uploadForm').on('submit', function (e) {
+                $('#loading').show();
+                e.preventDefault();
+                var formData = new FormData(this);
+                let fileInput = document.getElementById('cisFile');
+                let file = fileInput.files[0];
+                formData.append('pdf_file', file);
+                $.ajax({
+                    url: 'https://192.168.126.148:3000/uploadBenchmark', // Change this to your server endpoint
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $('#loading').hide();
+                        $('#uploadStatus').html('<p class="text-success">File uploaded successfully!</p>');
 
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $('#uploadStatus').html('<p class="text-danger">File upload failed!</p>');
-                }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#uploadStatus').html('<p class="text-danger">File upload failed!</p>');
+                    }
+                });
             });
-        });
 
 
         }); 
