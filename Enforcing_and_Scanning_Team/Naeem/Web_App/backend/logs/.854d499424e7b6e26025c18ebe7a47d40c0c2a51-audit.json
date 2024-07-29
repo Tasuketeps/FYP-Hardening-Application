@@ -9,6 +9,36 @@
             "date": 1721579681509,
             "name": "/var/www/myapp/backend/logs/error-2024-07-21.log",
             "hash": "9e3d0a0f7e18a6b4377435335d61e59060a35d83f1874aef71906ec64977617d"
+        },
+        {
+            "date": 1721620817806,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-22.log",
+            "hash": "1edd019885dbf1f656d66a9fecc091e8646c16e85b448b59b29df3fadb3f6931"
+        },
+        {
+            "date": 1721785673412,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-24.log",
+            "hash": "353e13be1c62c357d28848e6d9d711348914e9e21a5ddf95d3e947ee139d9104"
+        },
+        {
+            "date": 1721886240874,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-25.log",
+            "hash": "c6eb6b3ab2a1b03a05580db738bd4fbd46c4bceb5e489c90f8e593ef2d5c507d"
+        },
+        {
+            "date": 1721963096273,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-26.log",
+            "hash": "06e996bd07bec836dca50652c5d492a9d9a4adb8946ce51fba6abc404916b36d"
+        },
+        {
+            "date": 1722062218519,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-27.log",
+            "hash": "0a18df860b7cc6643198ac117cc015e55f46a23bdbe3c8ff412d52e2a8d7efd6"
+        },
+        {
+            "date": 1722131118098,
+            "name": "/var/www/myapp/backend/logs/error-2024-07-28.log",
+            "hash": "667bdcf594907717d8da178349ad1020b26ec2f7095073efe4021f972c488f13"
         }
     ],
     "hashType": "sha256"

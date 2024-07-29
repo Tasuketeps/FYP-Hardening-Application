@@ -102,16 +102,6 @@ with open(csv_file, 'rb') as pdf_file:
         rule_writer = csv.writer(
             out_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
-        rule_writer.writerow(
-            [
-                "ID",
-                "Category",
-                "Setting",
-                "RecommendedValue"
-                # "Audit",
-                # "Remediation"
-            ]
-        )
 
         # Read through all pages
         for page in (range(first_page,num_pages)):

@@ -9,6 +9,36 @@
             "date": 1721579681500,
             "name": "/var/www/myapp/backend/logs/combined-2024-07-21.log",
             "hash": "86d35a443b6d389260ad5ec9a1baa61d611bcd2b647e1cebe3cb20015b6ff67c"
+        },
+        {
+            "date": 1721620817790,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-22.log",
+            "hash": "33dedf4710541e803cd11365ee30a9f5eb3c8028d3800adb09b1dd4f4aa289c9"
+        },
+        {
+            "date": 1721785673404,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-24.log",
+            "hash": "d19d28864477d9635f638fb147aaa09acdbc8a061bfed6e0ae803a43eabe29d6"
+        },
+        {
+            "date": 1721886240867,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-25.log",
+            "hash": "cd6fd7758d07dea8ecf4e3198bd3dd0b3988e863277b7fbbb225cac7cc47c67d"
+        },
+        {
+            "date": 1721963096263,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-26.log",
+            "hash": "bbf7fbffb90e71442e6b503b881ba08d8bef75a66174b5f550d1be063788401f"
+        },
+        {
+            "date": 1722062218516,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-27.log",
+            "hash": "d54e85bba8ba00d429bb1826e1a3d007ad54479faeba3ae1a51a9e83e9362050"
+        },
+        {
+            "date": 1722131118091,
+            "name": "/var/www/myapp/backend/logs/combined-2024-07-28.log",
+            "hash": "870043c329505ebc7805d9982ee3eac5a013fa4a8be4be1614180da5fc192465"
         }
     ],
     "hashType": "sha256"

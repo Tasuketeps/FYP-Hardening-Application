@@ -109,33 +109,48 @@ updateUser: function (currentPassword, newPassword, repeatPassword, userid, call
             }
 
             var storedPassword = rows[0].password;
-            if (storedPassword !== currentPassword) {
-                conn.end();
-                console.log("Current password does not match for userid:", userid);
-                return callback(new Error('Current password is incorrect.'), null);
-            }
-
-            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-            if (!passwordRegex.test(newPassword)) {
-                conn.end();
-                return callback(new Error('Password must be 8 or more characters long, have at least a number, a special character, an uppercase and a lowercase letter'), null);
-            }
-
-            if (newPassword !== repeatPassword) {
-                conn.end();
-                return callback(new Error('Passwords do not match!'), null);
-            }
-
-            var updateSql = 'UPDATE users SET password = ? WHERE userid = ?';
-            conn.query(updateSql, [newPassword, userid], function (err, result) {
-                conn.end();
+            bcrypt.compare(currentPassword, storedPassword, function (err, isMatch) {
                 if (err) {
-                    console.log("Error updating password:", err);
+                    conn.end();
+                    console.log("Error comparing passwords:", err);
                     return callback(err, null);
-                } else {
-                    console.log("Password updated successfully.");
-                    return callback(null, result.insertId);
                 }
+
+                if (!isMatch) {
+                    conn.end();
+                    console.log("Current password does not match for userid:", userid);
+                    return callback(new Error('Current password is incorrect.'), null);
+                }
+
+                var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+                if (!passwordRegex.test(newPassword)) {
+                    conn.end();
+                    return callback(new Error('Password must be 8 or more characters long, have at least a number, a special character, an uppercase and a lowercase letter'), null);
+                }
+
+                if (newPassword !== repeatPassword) {
+                    conn.end();
+                    return callback(new Error('Passwords do not match!'), null);
+                }
+
+                bcrypt.hash(newPassword, 10, function (err, hashPassword) {
+                    if (err) {
+                        console.log("Error hashing password:", err);
+                        return callback(err, null);
+                    }
+
+                    var sql = 'UPDATE users SET password = ? WHERE userid = ?';
+                    conn.query(sql, [hashPassword, userid], function (err, result) {
+                        conn.end();
+                        if (err) {
+                            console.log("Error editing user password:", err);
+                            return callback(err, null);
+                        } else {
+                            console.log("User editing successfully with ID:", result.insertId);
+                            return callback(null, result.insertId);
+                        }
+                    });
+                });
             });
         });
     });
@@ -224,6 +239,31 @@ where ipaddress = ?;
             console.log(err);
             return callback(err, null);
           } else {
+            return callback(null, result);
+          }
+        });
+      }
+    });
+  },
+getUser: function (userid,callback) {
+    var conn = db.getConnection();
+    conn.connect(function (err) {
+      if (err) {
+        console.log(err);
+        return callback(err, null);
+      } else {
+        var sql = 'select username, email from users where userid = ?;';
+        conn.query(sql,[userid],function (err, result) {
+          conn.end();
+          if (err) {
+            console.log(err);
+            return callback(err, null);
+          }
+         else if (result.length === 0){
+                var noUserError = { code: 'NO_USER_FOUND', message: 'No user found for IP address: ' + ipaddress }
+                return callback(noUserError ,null);
+        }
+         else {
             return callback(null, result);
           }
         });

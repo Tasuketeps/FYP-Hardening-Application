@@ -1,0 +1,3 @@
+{"level":"info","message":"Create new user, User: admin2, Email: admin2@gmail.com","service":"user-service","timestamp":"2024-07-25 08:02:30"}
+{"level":"error","message":"User with userid: 1 FAILED to change password.","service":"user-service","timestamp":"2024-07-25 08:38:05"}
+{"level":"info","message":"User with userid: 1 changed password.","service":"user-service","timestamp":"2024-07-25 08:51:07"}

@@ -20,7 +20,7 @@ const scan = require("../models/scan");
 const benchmark = require("../models/benchmark")
 const baseline = require("../models/baseline")
 const logger = require("../scripts/logger")
-var verifyToken = require('../auth/verifyToken');
+const setting = require("../models/settings");
 // import body-parser middleware
 const bodyParser = require("body-parser");
 
@@ -31,7 +31,7 @@ app.use(bodyParser.text({ type: 'text/csv' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Login Endpoint 
+// Original Login Endpoint without recaptcha
 app.post('/user/loginOriginal',function(req, res){
   var username = req.body.username;
   var password = req.body.password;
@@ -49,6 +49,8 @@ app.post('/user/loginOriginal',function(req, res){
       }
   }); 
 });
+
+// new login endpoint with recaptcha
 app.post('/user/login', async (req, res) => {
     const secretKey = '6LeXsRIqAAAAAN313r0BJx4lMOLdvK926Ny1hUDC';
     const userKey = req.body.captchaToken;
@@ -81,7 +83,7 @@ app.post('/user/login', async (req, res) => {
     }
 
 });
-
+// endpoint to verify a user's type
 app.post('/verifyUser', verifyToken, function (req, res) {
     if (req.type === 'admin') {
         res.status(200).json({ type: 'admin' }); // Admin role
@@ -157,86 +159,29 @@ app.post('/user/updateUserPassword', verifyToken, (req, res) => {
         }
     });
 });
+// endpoint to get a user's details for settings page
+app.get('/user',verifyToken, function (req, res) {
+    const userid = req.userid;
 
+    if (!userid) {
+        return res.status(403).json({ error: 'User not authenticated.' });
+    }
 
-// Insert a Windows Username for SSH connection
-app.post('/sshUser', function (req, res) {
-    var ipaddress = req.body.ipaddress;
-    var username = req.body.username;
-    user.insertSshUser(ipaddress,username, function (err, result) {
-        if (!err) {
-            res.status(201).json({ message: "Registration successful!" });
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
+    user.getUser(userid, function(err, result) {
+        if (err) {
+            
+            return res.status(500).json({ error: err.message });
         } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
-
-// Update a Windows Username for SSH connection
-app.put('/sshUser', function (req, res) {
-    var ipaddress = req.body.ipaddress;
-    var username = req.body.username;
-    user.editSshUser(ipaddress,username, function (err, result) {
-        if (!err) {
-            res.status(201).json({ message: "Update successful!" });
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
-
-// Get Windows usernames
-app.get('/sshUsers', function (req, res) {
-    user.getSshUsers(function (err, result) {
-        if (!err) {
-            res.status(201).json(result);
-        } else if (err.code === "ER_DUP_ENTRY") {
-            res.status(422).json({ message: "Username or Email already exists!" });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
-
-// Get Single Windows Username
-app.get('/sshUser', function (req, res) {
-    var ipaddress = req.query.ipaddress;
-    user.getSshUser(ipaddress,function(err, result) {
-        if (!err) {
-            res.status(201).json(result);
-        } else if (err.code === 'NO_USER_FOUND') {
-            res.status(404).json({ error: err.message });
-        } else {
-            res.status(500).json({ message: "Server error" });
-        }
-    });
-});
-
-
-// Scanning policies script endpoint based on 
-app.get('/execute-secedit', (req, res) => {
-    exec('sh ../scripts/automate_process.sh', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing script: ${error}`);
-            res.status(500).send('Error executing script: ' + error.message);
-            return;
+            
+            return res.status(200).json(result);
         }
-        if (stderr) {
-            console.error(`Script stderr: ${stderr}`);
-            res.status(500).send('Script execution error: ' + stderr);
-            return;
-        }
-        console.log(`Script stdout: ${stdout}`);
-        res.send(`Script executed successfully: ${stdout}`);
     });
 });
 
-// Scan for connected devices to the domain network endpoint
-app.get('/scan', (req, res) => {
+
+// Scan for connected devices on the network endpoint, for this to work the server hosting the web needs to have
+// arp-scan installed and removing the need of sudo privileges to run the arp-scan command
+app.get('/scan', verifyToken,(req, res) => {
     ipaddr = req.query.ipaddr;
     execFile('/usr/sbin/arp-scan', [ipaddr], (error, stdout, stderr) => {
         if (error) {
@@ -255,7 +200,7 @@ app.get('/scan', (req, res) => {
 });
 
 // Scan system information based on ip address
-app.get('/scanInfo', (req, res) => {
+app.get('/scanInfo', verifyToken, (req, res) => {
     const ipaddr = req.query.ipaddr
     exec('sh scripts/scanInfo.sh ' + ipaddr, (error, stdout, stderr) => {
         if (error) {
@@ -274,7 +219,7 @@ app.get('/scanInfo', (req, res) => {
 });
 
 // Scans for policies based on ip address endpoint
-app.get('/policy-scan', (req, res) => {
+app.get('/policy-scan', verifyToken,(req, res) => {
     const ipaddr = req.query.ipaddr
     exec('sh scripts/automate_process.sh ' + ipaddr, (error, stdout, stderr) => {
         if (error) {
@@ -335,7 +280,7 @@ return;
 });
 
 // Checks scan file existence endpoint
-app.get("/checkPolicy", (req, res, next) => {
+app.get("/checkPolicy", verifyToken,(req, res, next) => {
     const ipaddr = req.query.ipaddr
     scan.checkScan(ipaddr,(error, results) => {
       if (error) {
@@ -350,7 +295,7 @@ app.get("/checkPolicy", (req, res, next) => {
   });
 
 // Get scan file endpoint
-app.get("/getPolicy", (req, res, next) => {
+app.get("/getPolicy", verifyToken,(req, res, next) => {
     const scanid = req.query.scanid
     scan.findFilename(scanid,(error, results) => {
       if (error) {
@@ -392,7 +337,7 @@ app.get("/getPolicy", (req, res, next) => {
 
 
 // Gets policy endpoint
-app.get("/openPolicy", (req, res, next) => {
+app.get("/openPolicy", verifyToken,(req, res, next) => {
   const scanid = req.query.scanid
   scan.getPolicyName(scanid,(error, results) => {
     if (error) {
@@ -429,7 +374,7 @@ app.get("/openPolicy", (req, res, next) => {
 
 app.use(fileUpload());
 // Draft CIS Benchmark uploader endpoint
-app.post("/uploadBenchmark", (req, res) => {
+app.post("/uploadBenchmark", verifyToken,(req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No files were uploaded.');
   }
@@ -473,8 +418,8 @@ app.post("/uploadBenchmark", (req, res) => {
             });
   });
 });
-
-app.get("/allBenchmarks", (req, res, next) => {
+// gets all benchmarks
+app.get("/allBenchmarks", verifyToken,(req, res, next) => {
     benchmark.findAllBenchmarks((error, results) => {
       if (error) {
         console.log(error);
@@ -484,7 +429,8 @@ app.get("/allBenchmarks", (req, res, next) => {
     });
   });
 
-app.get("/benchmark", (req, res, next) => {
+// gets a single benchmark
+app.get("/benchmark", verifyToken,(req, res, next) => {
 const filename = req.query.filename;
 
   if (!filename) {
@@ -502,8 +448,8 @@ const filename = req.query.filename;
     res.status(200).send(data);
   });    
   });
-
-app.post('/baseline', (req, res) => {
+// uploads baseline endpoint
+app.post('/baseline', verifyToken,(req, res) => {
     const csvData = req.body;
     const baselineName = req.headers['baseline-name'];
 
@@ -540,9 +486,9 @@ app.post('/baseline', (req, res) => {
     });
 });
 
+// gets all baselines endpoint
 
-
-app.get("/allBaseline", (req, res, next) => {
+app.get("/allBaseline", verifyToken,(req, res, next) => {
     baseline.getAllBaseline((error, results) => {
       if (error) {
         console.log(error);
@@ -552,7 +498,9 @@ app.get("/allBaseline", (req, res, next) => {
     });
   });
 
-app.get("/baseline", (req, res, next) => {
+
+// endpoint to display the comparison between current values and recommended values 
+app.get("/baseline", verifyToken, (req, res, next) => {
     filename = req.query.filename;
     policyFileName = req.query.policyFileName;
     baseline.getBaseline(filename,(error, results) => {
@@ -585,6 +533,7 @@ app.get("/baseline", (req, res, next) => {
     });
   });
 
+// enforcing endpoint
 app.post('/updatedPolicy', verifyToken, (req, res) => {
     
     var userid = req.userid;
@@ -660,7 +609,28 @@ app.post('/updatedPolicy', verifyToken, (req, res) => {
 
 });
 
+app.put('/setting', verifyToken, (req, res) => {
+    const userid = req.userid;
+    const ipaddr = req.body.ipaddr;
+    setting.updateSettings(userid, ipaddr, (err, result) => {
+        if (!err) {
+            res.status(200).json({ message: "Update successful!" });
+        } else {
+            res.sendStatus(500);
+        }
+    });
+});
 
+app.get('/getSetting', verifyToken, (req, res) => {
+    const userid = req.userid;
+    setting.getSettings(userid, (err, result) => {
+        if (!err) {
+            res.status(200).json(result);
+        } else {
+            res.sendStatus(500);
+        }
+    });
+});
 
 
 
